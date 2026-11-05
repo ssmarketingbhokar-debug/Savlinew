@@ -1,0 +1,2228 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#e65100">
+<title>सावली स्टोर — भोकरचे आपले ऑनलाईन मार्केट</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+a[href*="netlify"] { display: none !important; }
+
+/* ================= केशरी आणि सोनेरी थीम (Orange & Gold Theme) ================= */
+:root{
+  --purple:#e65100;         /* मुख्य केशरी रंग */
+  --btn-purple:#ff6d00;     /* बटण केशरी */
+  --btn-orange:#ffb300;     /* सोनेरी/पिवळा */
+  --deep:#bf360c;           /* डार्क केशरी */
+--footer-bg:#fef0d9;    /* फुटर बॅकग्राउंड */
+--backtop-bg: #854d0e;
+  --gold:#ffb000;           /* सोनेरी */
+  --ink:#1e2330;
+  --muted:#687082;
+  --bg:#fdf8f5;             /* हलका वॉर्म बॅकग्राउंड */
+  --white:#ffffff;
+  --green:#0f8a5f;
+  --red:#e5232d;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+body{background:var(--bg);font-family:Inter,system-ui,-apple-system,sans-serif;color:var(--ink);padding-bottom:68px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.app{max-width:900px;margin:0 auto;min-height:100vh;background:var(--bg)}
+
+/* ================= 1. MANDATORY FULL-SCREEN LOGIN GATE ================= */
+.login-gate-overlay{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg, #bf360c 0%, #e65100 55%, #ff6d00 100%);
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.login-gate-overlay.active{display:flex}
+.login-gate-card{
+  background:var(--white);
+  width:100%;
+  max-width:400px;
+  border-radius:22px;
+  padding:26px 22px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,0.45);
+  animation:popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.gate-logo{
+  width:68px;
+  height:68px;
+  border-radius:16px;
+  background:var(--gold);
+  color:var(--white);
+  font-size:34px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 12px;
+  overflow:hidden;
+  box-shadow:0 4px 14px rgba(255,176,0,0.4);
+}
+.gate-logo img{width:100%;height:100%;object-fit:cover}
+.login-gate-card h2{font-size:21px;font-weight:900;color:var(--deep);margin-bottom:4px}
+.login-gate-card p{font-size:13px;color:var(--muted);margin-bottom:18px;font-weight:600}
+
+/* ================= 2. ANIMATED SALE TAG ================= */
+.sale-anim-badge{
+  position:absolute;
+  right:8px;
+  top:8px;
+  background:linear-gradient(45deg, #ff0844 0%, #ffb199 50%, #ff0844 100%);
+  background-size:200% 200%;
+  color:var(--white);
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:0.5px;
+  z-index:5;
+  box-shadow:0 3px 10px rgba(255, 8, 68, 0.5);
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  border:1.5px solid #fff;
+  animation:salePulse 1.1s infinite alternate ease-in-out, saleBgShift 2.5s infinite linear;
+}
+@keyframes salePulse{
+  0%{transform:scale(1) rotate(-2deg);box-shadow:0 2px 8px rgba(229,35,45,0.5)}
+  100%{transform:scale(1.13) rotate(2deg);box-shadow:0 5px 16px rgba(255,176,0,0.85)}
+}
+@keyframes saleBgShift{
+  0%{background-position:0% 50%}
+  100%{background-position:200% 50%}
+}
+
+/* ================= 3. ANIMATED THANK YOU ORDER MODAL ================= */
+.thankyou-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(15, 10, 35, 0.82);
+  backdrop-filter:blur(4px);
+  z-index:450;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.thankyou-overlay.open{display:flex}
+.thankyou-card{
+  background:var(--white);
+  width:100%;
+  max-width:390px;
+  border-radius:24px;
+  padding:28px 22px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 15px 40px rgba(0,0,0,0.4);
+  animation:popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn{
+  0%{transform:scale(0.6);opacity:0}
+  100%{transform:scale(1);opacity:1}
+}
+.ty-check-circle{
+  width:82px;
+  height:82px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #10b981, #059669);
+  color:var(--white);
+  font-size:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 16px;
+  box-shadow:0 8px 22px rgba(16, 185, 129, 0.45);
+  animation:checkBounce 0.8s ease infinite alternate;
+}
+@keyframes checkBounce{
+  0%{transform:translateY(0) scale(1)}
+  100%{transform:translateY(-6px) scale(1.06)}
+}
+.confetti-piece{
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:2px;
+  animation:confettiFall 2.2s linear infinite;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+  100%{transform:translateY(340px) rotate(360deg);opacity:0}
+}
+
+/* Header */
+.header{background:var(--purple);color:var(--white);padding:12px 14px;position:sticky;top:0;z-index:30;box-shadow:0 2px 10px rgba(0,0,0,0.15)}
+.topline{display:flex;align-items:center;gap:10px}
+.logo{width:44px;height:44px;border-radius:11px;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:23px;font-weight:900;flex:none;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.2);cursor:pointer;border:2px solid rgba(255,255,255,0.4)}
+.logo img{width:100%;height:100%;object-fit:cover;display:block}
+.brand{flex:1;min-width:0;cursor:pointer}
+.brand h1{font-size:18px;font-weight:900;letter-spacing:0.3px;line-height:1.1}
+.brand h1 span{color:var(--gold)}
+.brand p{font-size:11px;opacity:0.9;margin-top:2px}
+
+.actions{display:flex;gap:6px;align-items:center}
+.lang-btn{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.4);color:var(--white);padding:5px 9px;border-radius:20px;font-size:11px;font-weight:800}
+.user-top-btn{background:rgba(255,255,255,0.18);border:0;color:var(--white);padding:6px 10px;border-radius:20px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px}
+.cart-top-btn{background:var(--white);color:var(--purple);border:0;padding:6px 11px;border-radius:20px;font-size:12px;font-weight:800;display:flex;align-items:center;gap:5px}
+.badge{background:var(--gold);color:#111;border-radius:50%;font-size:11px;font-weight:900;padding:1px 6px}
+
+/* Searchbar */
+.searchbar{margin-top:10px;background:var(--white);border-radius:10px;height:42px;display:flex;align-items:center;padding:0 12px;gap:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08)}
+.searchbar input{border:0;outline:0;flex:1;font-size:14px;color:var(--ink)}
+.searchbar button{border:0;background:none;color:var(--muted);font-size:16px}
+
+/* Strict Circular Instagram Story Style Categories */
+.categories{display:flex;gap:14px;overflow-x:auto;padding:14px 14px 12px;background:var(--white);border-bottom:1px solid #eceef4;scrollbar-width:none}
+.categories::-webkit-scrollbar{display:none}
+.category{border:0;background:transparent;width:72px;flex:0 0 72px;display:flex;flex-direction:column;align-items:center;color:var(--ink);font-weight:700;font-size:12px}
+.story-ring{width:66px;height:66px;min-width:66px;min-height:66px;aspect-ratio:1/1;border-radius:50%!important;padding:3px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);display:flex;align-items:center;justify-content:center;margin-bottom:6px;transition:transform 0.2s;box-shadow:0 3px 8px rgba(220,39,67,0.25);overflow:hidden}
+.category.active .story-ring{background:linear-gradient(45deg,var(--purple),var(--gold));transform:scale(1.07);box-shadow:0 4px 12px rgba(230,81,0,0.35)}
+.story-ring img{width:100%!important;height:100%!important;aspect-ratio:1/1;object-fit:cover;border-radius:50%!important;border:2.5px solid var(--white);background:#f5f5f5;display:block}
+.category span{display:block;width:72px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.category.active span{color:var(--purple);font-weight:900}
+
+/* Balanced Medium-Height Sliding Banner */
+.banner-wrap{padding:12px 12px 6px;position:relative}
+.banners{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth;border-radius:16px}
+.banners::-webkit-scrollbar{display:none}
+.banner{min-width:100%;height:195px;border-radius:16px;overflow:hidden;scroll-snap-align:center;background:#e9e9f0;flex:none;box-shadow:0 3px 10px rgba(0,0,0,0.1)}
+@media(min-width:600px){.banner{height:250px}}
+.banner img{width:100%;height:100%;object-fit:cover;display:block}
+.slider-dots{display:flex;justify-content:center;gap:6px;margin-top:8px}
+.s-dot{width:7px;height:7px;border-radius:50%;background:#ffcc80;border:0}
+.s-dot.active{width:22px;border-radius:8px;background:var(--purple)}
+
+/* Section Heading */
+.section-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px}
+.section-head h2{font-size:16px;font-weight:900;color:var(--ink)}
+.seeall{border:0;background:none;color:var(--purple);font-size:13px;font-weight:800}
+
+/* Product Grid */
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 12px 16px}
+@media(min-width:700px){.products{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}}
+.product{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;flex-direction:column;border:1px solid #eff0f5}
+.photo{height:165px;position:relative;background:#fdf8f5;cursor:pointer}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.off{position:absolute;left:8px;top:8px;background:var(--red);color:var(--white);padding:3px 8px;border-radius:6px;font-size:10px;font-weight:800;z-index:2}
+.multi-pic-badge{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,0.65);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.product-info{padding:10px;display:flex;flex-direction:column;flex:1}
+.product-info h3{font-size:13px;font-weight:700;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;line-height:1.25;cursor:pointer;color:var(--ink)}
+.price{font-size:16px;font-weight:900;color:var(--ink);margin-top:auto;margin-bottom:10px}
+.price del{font-size:11px;color:var(--muted);font-weight:500;margin-left:4px}
+
+/* EXACT PILL BUTTONS AS PER SCREENSHOT (एकाखाली एक) */
+.btn-group{display:flex;flex-direction:column;gap:8px;width:100%}
+.add{
+  width:100%;
+  background:var(--btn-orange);
+  color:#1a202c;
+  border:none;
+  border-radius:50px;
+  padding:9px 10px;
+  font-weight:800;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-shadow:0 3px 8px rgba(245,158,11,0.3);
+  transition:transform 0.15s;
+}
+.add:active{transform:scale(0.97)}
+.buy-btn{
+  width:100%;
+  background:var(--btn-purple);
+  color:var(--white);
+  border:none;
+  border-radius:50px;
+  padding:9px 10px;
+  font-weight:800;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-shadow:0 3px 8px rgba(230,81,0,0.3);
+  transition:transform 0.15s;
+}
+.buy-btn:active{transform:scale(0.97)}
+
+/* ================= TOUCH SWIPEABLE PRODUCT DETAIL GALLERY ================= */
+.detail-box{background:var(--white);padding:16px;margin:10px 12px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.back-btn{border:0;background:#fff3e0;color:var(--purple);padding:7px 14px;border-radius:20px;font-weight:800;font-size:13px;margin-bottom:12px;display:inline-flex;align-items:center;gap:6px}
+.detail-img-wrap{background:#fdf8f5;border-radius:12px;position:relative;margin-bottom:10px;overflow:hidden}
+.detail-swipe-track{
+  display:flex;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+.detail-swipe-track::-webkit-scrollbar{display:none}
+.detail-slide{
+  min-width:100%;
+  height:290px;
+  scroll-snap-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
+}
+.detail-slide img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  border-radius:8px;
+  user-select:none;
+}
+.assured-tag{position:absolute;left:12px;bottom:12px;background:var(--purple);color:var(--white);font-size:11px;font-weight:800;padding:4px 10px;border-radius:6px;z-index:4;pointer-events:none}
+.swipe-hint-dots{display:flex;justify-content:center;gap:5px;margin-bottom:10px}
+.sw-dot{width:7px;height:7px;border-radius:50%;background:#ffcc80;transition:0.2s}
+.sw-dot.active{width:18px;border-radius:6px;background:var(--purple)}
+
+.detail-thumbs-row{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px}
+.detail-thumb{width:64px;height:64px;border:2px solid #ddd;border-radius:10px;padding:2px;cursor:pointer;flex:none;transition:0.2s}
+.detail-thumb.active{border-color:var(--purple);transform:scale(1.05);box-shadow:0 2px 6px rgba(230,81,0,0.25)}
+.detail-thumb img{width:100%;height:100%;object-fit:cover;border-radius:7px}
+
+.detail-cat{font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:0.5px}
+.detail-title{font-size:18px;font-weight:900;margin:4px 0 8px;line-height:1.3}
+.detail-rating{font-size:13px;color:#f5a623;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.detail-price-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.detail-price{font-size:26px;font-weight:900;color:var(--ink)}
+.detail-mrp{font-size:15px;color:var(--muted);text-decoration:line-through}
+.detail-save{background:#fff3e6;border:1px solid #ffd0a6;color:#d9530f;font-size:12px;font-weight:800;padding:3px 8px;border-radius:6px}
+.delivery-check-box{background:#f1fbf7;border:1px solid #c5ebd9;border-radius:10px;padding:12px;margin:14px 0}
+.delivery-check-box h4{font-size:13px;color:#0b6e4b;margin-bottom:8px}
+.pin-row{display:flex;gap:8px;margin-bottom:8px}
+.pin-row input{flex:1;padding:8px 10px;border:1px solid #ccc;border-radius:6px;font-weight:700;font-size:13px}
+.pin-row button{background:#0d6847;color:var(--white);border:0;padding:0 16px;border-radius:6px;font-weight:700;font-size:13px}
+
+/* ================= EDITABLE MARATHI FOOTER WITH SPECIAL FEATURES ================= */
+.footer-wrapper{margin-top:24px}
+.trust-strip{
+  background:linear-gradient(90deg, #fff8e6, #fff0cc);
+  border-top:2px solid var(--gold);
+  border-bottom:1px solid #ffe099;
+  color:#4a3000;
+  padding:10px 14px;
+  text-align:center;
+  font-size:12.5px;
+  font-weight:800;
+}
+.back-to-top{background:var(--backtop-bg);color:var(--white);text-align:center;padding:13px;font-size:14px;font-weight:800;cursor:pointer}
+.site-footer{background:var(--footer-bg);color:#1e2330;padding:24px 18px 36px}
+
+.store-time-box{
+  background: #fdf8f5;
+  border: 1px solid #d97706;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.footer-block{margin-bottom:22px}
+.footer-block h4{color:#854d0e;...}
+font-size:16px;font-weight:800;margin-bottom:10px}
+.footer-block ul{list-style:none}
+.footer-block ul li{margin-bottom:10px;font-size:14px;color:#1f2937;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:7px}
+.footer-block ul li:active{color:var(--gold)}
+
+.quick-wa-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#25d366;
+  color:#fff;
+  padding:9px 16px;
+  border-radius:25px;
+  font-weight:800;
+  font-size:13px;
+  text-decoration:none;
+  margin-top:6px;
+  box-shadow:0 3px 10px rgba(37,211,102,0.35);
+}
+
+.social-row{display:flex;gap:12px;margin-top:10px}
+.social-ico{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,0.3);
+}
+
+.pay-methods-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pay-badge-card{background:var(--white);color:var(--ink);padding:8px 12px;border-radius:8px;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;gap:6px}
+.footer-addr{border-top:1px solid #d97706;padding-top:16px;margin-top:16px;font-size:13px;color:#1f2937;line-height:1.5;font-weight:600}
+.footer-addr a{color:#b45309!important;text-decoration:none;font-weight:800}
+
+
+/* Floating WhatsApp Button */
+.floating-wa{position:fixed;bottom:76px;right:16px;width:54px;height:54px;background:#25d366;color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 14px rgba(0,0,0,0.3);z-index:40;text-decoration:none}
+.floating-wa .red-dot{position:absolute;top:2px;right:2px;width:13px;height:13px;background:#e5232d;border:2px solid var(--white);border-radius:50%}
+
+/* Views */
+.view-sec{display:none}
+.view-sec.active{display:block}
+.card-box{background:var(--white);border-radius:12px;padding:14px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
+.card-box h3{font-size:15px;font-weight:900;color:var(--deep);margin-bottom:12px}
+.inp{width:100%;padding:10px 12px;border:1px solid #d8dbe4;border-radius:8px;margin-bottom:10px;font-size:14px;outline:0}
+.pay-opt{border:1.5px solid #e2e5ee;border-radius:10px;padding:11px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:13px;font-weight:700}
+.pay-opt.selected{border-color:var(--purple);background:#fff3e0}
+
+.order-item{border:1px solid #e5e6eb;border-radius:12px;padding:12px;margin-bottom:12px;background:#faf9ff}
+.status-pill{padding:4px 9px;border-radius:12px;font-size:11px;font-weight:800}
+.st-Pending{background:#fff3cd;color:#856404}
+.st-Confirmed{background:#cce5ff;color:#004085}
+.st-Delivered{background:#d4edda;color:#155724}
+.ord-prod-row{display:flex;align-items:center;gap:10px;background:var(--white);padding:8px;border-radius:8px;border:1px solid #eee;margin-bottom:6px}
+.ord-prod-row img{width:46px;height:46px;border-radius:6px;object-fit:cover;flex:none}
+
+/* Admin Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:100;display:none;overflow-y:auto;padding:12px}
+.modal-overlay.open{display:block}
+.admin-panel{background:var(--white);max-width:560px;margin:10px auto 30px;border-radius:14px;padding:16px}
+.adm-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;border-bottom:1px solid #eee}
+.adm-tab{border:0;background:#f0f1f5;padding:7px 11px;border-radius:8px;font-weight:800;font-size:12px;white-space:nowrap}
+.adm-tab.active{background:var(--purple);color:var(--white)}
+.adm-sec{display:none}
+.adm-sec.active{display:block}
+.adm-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px;border:1px solid #eee;border-radius:10px;margin-bottom:8px;font-size:13px}
+.adm-row img{width:46px;height:46px;border-radius:6px;object-fit:cover;flex:none}
+.sm-btn{border:0;padding:6px 10px;border-radius:6px;font-weight:800;font-size:12px;color:var(--white)}
+
+.photo-upload-card{border:1.5px solid #ffe0b2;background:#fff8e1;border-radius:10px;padding:10px;margin-bottom:10px}
+.photo-slot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px}
+.slot-card{border:1.5px dashed var(--purple);border-radius:10px;padding:8px;background:#fff;text-align:center;position:relative}
+.slot-preview-box{width:100%;height:80px;background:#fdf8f5;border-radius:8px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.slot-preview-box img{width:100%;height:100%;object-fit:cover;display:none}
+.slot-preview-box span{font-size:11px;color:var(--muted);font-weight:700}
+.pick-btn{width:100%;background:var(--purple);color:#fff;border:0;padding:6px;border-radius:6px;font-size:11px;font-weight:800;margin-bottom:4px}
+.clear-btn{position:absolute;top:4px;right:4px;background:var(--red);color:#fff;border:0;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:900;display:none;align-items:center;justify-content:center;z-index:3}
+.url-mini-inp{width:100%;padding:5px 7px;font-size:11px;border:1px solid #ccc;border-radius:5px;outline:0}
+
+.sale-check-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:#fff0f3;
+  border:1.5px solid #ffccd5;
+  padding:10px 12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  font-weight:800;
+  font-size:13px;
+  color:#c9184a;
+}
+.sale-check-box input{width:18px;height:18px;accent-color:#e5232d}
+.adm-lbl{display:block;font-size:12px;font-weight:800;color:var(--deep);margin:8px 0 4px}
+
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,900px);height:62px;background:var(--white);display:flex;justify-content:space-around;align-items:center;z-index:30;border-top:1px solid #e6e8f0;box-shadow:0 -2px 10px rgba(0,0,0,0.04)}
+.nav-item{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;padding:6px 10px;border-radius:10px}
+.nav-item .ico{font-size:19px;line-height:1}
+.nav-item.active{color:var(--purple);font-weight:900}
+
+.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:#1e2330;color:var(--white);padding:10px 18px;border-radius:25px;font-size:13px;opacity:0;pointer-events:none;transition:0.2s;z-index:600;font-weight:800;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.toast.show{opacity:1}
+.empty{display:none;text-align:center;padding:30px;color:var(--muted);font-size:14px;font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ================= MANDATORY NEW CUSTOMER LOGIN GATE ================= -->
+<div class="login-gate-overlay" id="mandatoryLoginGate">
+  <div class="login-gate-card">
+    <div class="gate-logo" id="gateLogoBox">S</div>
+    <h2 id="gateBrandTitle">सावली स्टोर</h2>
+    <p>पुढे जाण्यासाठी कृपया तुमचे नाव आणि मोबाईल नंबरने लॉगिन करा</p>
+    <input class="inp" id="gateName" placeholder="तुमचे पूर्ण नाव (Full Name) *">
+    <input class="inp" id="gatePhone" type="tel" maxlength="10" placeholder="१० अंकी मोबाईल नंबर (Mobile No) *">
+    <input class="inp" id="gateAddr" placeholder="भोकर मधील पत्ता / गल्ली (Address) *">
+    <button type="button" class="buy-btn" style="padding:13px;font-size:15px;margin-top:6px" onclick="completeGateLogin()">
+      🚀 ॲप उघडा (Login & Open Store)
+    </button>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted)">
+      🔒 १००% सुरक्षित • भोकर फास्ट होम डिलिव्हरी
+    </div>
+  </div>
+</div>
+
+<!-- ================= ANIMATED THANK YOU ORDER POPUP ================= -->
+<div class="thankyou-overlay" id="thankYouModal">
+  <div class="thankyou-card">
+    <div class="confetti-piece" style="left:15%;background:#ff0844;animation-delay:0s"></div>
+    <div class="confetti-piece" style="left:35%;background:#ffb000;animation-delay:0.3s"></div>
+    <div class="confetti-piece" style="left:55%;background:#e65100;animation-delay:0.1s"></div>
+    <div class="confetti-piece" style="left:75%;background:#10b981;animation-delay:0.4s"></div>
+    <div class="confetti-piece" style="left:88%;background:#3b82f6;animation-delay:0.2s"></div>
+
+    <div class="ty-check-circle">✓</div>
+    <h2 style="font-size:22px;font-weight:900;color:var(--deep);margin-bottom:6px">धन्यवाद! (Thank You!) 🎉</h2>
+    <p style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:8px">
+      तुमची ऑर्डर यशस्वीरित्या स्वीकारली आहे!
+    </p>
+    <div id="tyOrderSummary" style="background:#fff8e1;border:1px dashed var(--purple);border-radius:12px;padding:10px;font-size:13px;color:var(--ink);margin-bottom:16px;line-height:1.5"></div>
+    <button type="button" class="buy-btn" style="padding:12px;font-size:14px;background:var(--green);margin-bottom:8px" onclick="sendLastOrderWhatsApp()">
+      <i class="fab fa-whatsapp" style="font-size:18px"></i> व्हॉट्सॲपवर पावती पाठवा
+    </button>
+    <button type="button" class="add" style="padding:10px;font-size:13px" onclick="closeThankYouModal()">
+      माझ्या ऑर्डर्स पहा (View My Orders)
+    </button>
+  </div>
+</div>
+
+<!-- ================= INFO POPUP MODAL (FOR RETURN POLICY / HELP) ================= -->
+<div class="modal-overlay" id="infoPopupModal">
+  <div class="admin-panel" style="max-width:400px;margin-top:80px;text-align:center">
+    <h3 id="infoPopupTitle" style="color:var(--deep);margin-bottom:10px;font-size:17px">माहिती</h3>
+    <p id="infoPopupText" style="font-size:14px;color:var(--ink);line-height:1.5;margin-bottom:16px"></p>
+    <button type="button" class="buy-btn" style="padding:10px" onclick="document.getElementById('infoPopupModal').classList.remove('open')">ठीक आहे (OK)</button>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- Header -->
+<header class="header">
+  <div class="topline">
+    <div class="logo" id="logoBtn" onclick="openAdminPrompt()" title="Admin Panel">S</div>
+    <div class="brand" onclick="switchView('Home')">
+      <h1 id="brandHeading">सावली<span>स्टोर</span></h1>
+      <p id="brandTagline">फक्त एका तासात डिलेव्हरी</p>
+    </div>
+    <div class="actions">
+      <button class="lang-btn" id="langBtn" onclick="toggleLanguage()">🌐 EN</button>
+      <button class="user-top-btn" onclick="openLoginModal()">
+        👤 <span id="topUserText">Login</span>
+      </button>
+      <button class="cart-top-btn" onclick="switchView('Cart')">
+        🛒 <span class="badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="searchbar">
+    <span>🔍</span>
+    <input id="search" type="search" placeholder="दागिने, कॉस्मेटिक्स, मोबाईल, किराणा शोधा...">
+    <button onclick="document.getElementById('search').value='';filterProducts('');">✕</button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= VIEW 1: HOME VIEW ================= -->
+  <div id="viewHome" class="view-sec active">
+    <section class="categories" id="categoriesList"></section>
+
+    <div class="banner-wrap">
+      <section class="banners" id="bannersList"></section>
+      <div class="slider-dots" id="sliderDots"></div>
+    </div>
+
+    <section id="prodStartSec">
+      <div class="section-head">
+        <h2 id="secTitle">लोकप्रिय वस्तू (Best Sellers)</h2>
+        <button class="seeall" id="seeAllBtn" onclick="selectCategory('All')">सर्व पहा →</button>
+      </div>
+      <div class="products" id="products"></div>
+      <div class="empty" id="empty">कोणतीही वस्तू सापडली नाही.</div>
+    </section>
+  </div>
+
+  <!-- ================= VIEW 2: PRODUCT DETAIL PAGE ================= -->
+  <div id="viewDetail" class="view-sec">
+    <div class="detail-box" id="detailContainer"></div>
+  </div>
+
+  <!-- ================= VIEW 3: CART & CHECKOUT VIEW (GPS & LANDMARK ADDED) ================= -->
+  <div id="viewCart" class="view-sec">
+    <div class="card-box">
+      <h3 id="cartHeading">🛒 तुमची शॉपिंग बॅग (<span id="cartTotalItems">0</span>)</h3>
+      <div id="cartItemsContainer"></div>
+    </div>
+
+    <div class="card-box">
+      <h3 id="addrHeading">१. डिलिव्हरी पत्ता (भोकर - 431801)</h3>
+      <input class="inp" id="custName" placeholder="तुमचे पूर्ण नाव (Full Name) *">
+      <input class="inp" id="custPhone" type="tel" maxlength="10" placeholder="मोबाईल नंबर (10 अंकी) *">
+      <textarea class="inp" id="custAddr" rows="2" placeholder="संपूर्ण पत्ता (घर नं., गल्लीचे नाव) *"></textarea>
+      
+      <!-- नवीन लँडमार्क रकाना -->
+      <input class="inp" id="custLandmark" placeholder="जवळची खूण (Landmark) * उदा. मारुती मंदिराजवळ">
+      
+      <!-- नवीन GPS लोकेशन बटण -->
+      <button type="button" class="add" onclick="getGPSLocation()" style="margin-bottom:10px; background:#fff3e0; color:#e65100; border: 1px solid #ffcc80;">
+        📍 माझे सध्याचे लोकेशन घ्या (GPS)
+      </button>
+      <input type="hidden" id="custGps" value="">
+    </div>
+
+    <div class="card-box">
+      <h3 id="payHeading">२. पेमेंट पर्याय निवडा</h3>
+      <div class="pay-opt selected" onclick="selectPayMode('Cash on Delivery (COD)', this)">
+        <span id="codText">💵 कॅश ऑन डिलिव्हरी (घरपोच पैसे द्या)</span><span>✓</span>
+      </div>
+      <div class="pay-opt" onclick="selectPayMode('UPI / PhonePe / GPay', this)">
+        <span id="upiText">📱 ऑनलाईन UPI (PhonePe / Google Pay)</span><span>✓</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:900;margin:14px 0">
+        <span id="totalPayLabel">एकूण रक्कम:</span>
+        <span id="cartGrandTotal" style="color:var(--purple)">₹0</span>
+      </div>
+      <button class="buy-btn" id="placeOrderBtn" style="padding:13px;font-size:15px;background:var(--green)" onclick="placeOrderNow()">
+        ✓ ऑर्डर कन्फर्म करा (Place Order)
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= VIEW 4: MY ACCOUNT & ORDERS VIEW ================= -->
+  <div id="viewOrders" class="view-sec">
+    <div class="card-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">👤 माझे अकाउंट (My Profile)</h3>
+        <button class="sm-btn" style="background:var(--purple)" onclick="openLoginModal()">Edit Profile</button>
+      </div>
+      <div id="loggedUserCard" style="font-size:13px;color:var(--muted);background:#fff8e1;padding:10px;border-radius:8px"></div>
+    </div>
+
+    <div class="card-box">
+      <h3 id="myOrdersHeading">📦 माझ्या ऑर्डर्स (My Orders)</h3>
+      <div id="customerOrdersContainer"></div>
+    </div>
+  </div>
+
+  <!-- ================= DYNAMIC MARATHI FOOTER ================= -->
+  <div class="footer-wrapper" id="footerContainer"></div>
+</main>
+
+<!-- Floating WhatsApp Icon -->
+<a href="#" id="floatingWaBtn" target="_blank" class="floating-wa">
+  <i class="fab fa-whatsapp"></i>
+  <span class="red-dot"></span>
+</a>
+
+<!-- ================= CUSTOMER EDIT PROFILE MODAL ================= -->
+<div class="modal-overlay" id="loginModal">
+  <div class="admin-panel" style="max-width:400px;margin-top:60px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 style="color:var(--deep);font-size:17px">👤 कस्टमर माहिती (Customer Profile)</h3>
+      <button type="button" onclick="document.getElementById('loginModal').classList.remove('open')" style="border:0;background:#eee;width:30px;height:30px;border-radius:50%;font-weight:900">✕</button>
+    </div>
+    <input class="inp" id="loginName" placeholder="तुमचे पूर्ण नाव (Full Name) *">
+    <input class="inp" id="loginPhone" type="tel" maxlength="10" placeholder="मोबाईल नंबर (10 Digits) *">
+    <input class="inp" id="loginAddr" placeholder="भोकर मधील पत्ता (Address in Bhokar) *">
+    <button type="button" class="buy-btn" style="padding:12px;font-size:14px" onclick="saveCustomerLogin()">✓ सेव्ह करा (Save Profile)</button>
+  </div>
+</div>
+
+<!-- ================= SECRET ADMIN PANEL MODAL ================= -->
+<div class="modal-overlay" id="adminModal">
+  <div class="admin-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 style="color:var(--deep);font-size:17px">⚙️ Admin Panel (फुल कंट्रोल)</h3>
+      <button type="button" onclick="closeAdmin()" style="border:0;background:#eee;width:32px;height:32px;border-radius:50%;font-weight:900">✕</button>
+    </div>
+
+    <div class="adm-tabs">
+      <button type="button" class="adm-tab active" onclick="openAdmTab('admProducts',this)">🛍️ वस्तू</button>
+      <button type="button" class="adm-tab" onclick="openAdmTab('admOrders',this)">📦 Orders (<span id="admOrdCount">0</span>)</button>
+      <button type="button" class="adm-tab" onclick="openAdmTab('admCustomers',this)">👥 ग्राहक (<span id="admCustCount">0</span>)</button>
+      <button type="button" class="adm-tab" onclick="openAdmTab('admBanners',this)">🖼️ बॅनर</button>
+      <button type="button" class="adm-tab" onclick="openAdmTab('admCats',this)">⭕ कॅटेगरी</button>
+      <button type="button" class="adm-tab" onclick="openAdmTab('admFooter',this)">📝 फुटर माहिती</button>
+      <button type="button" class="adm-tab" onclick="openAdmTab('admSettings',this)">🎨 लोगो & सेटिंग</button>
+    </div>
+
+    <!-- Admin Tab 1: Products -->
+    <div id="admProducts" class="adm-sec active">
+      <h4 id="prodFormHeading" style="margin-bottom:8px;font-size:14px;color:var(--purple)">+ नवीन वस्तू जोडा (१ ते ४ फोटोंसह)</h4>
+      <input type="hidden" id="editProdId">
+      <input class="inp" id="prdName" placeholder="वस्तूचे नाव (Product Name) *">
+      <select class="inp" id="prdCat"></select>
+      <div style="display:flex;gap:8px">
+        <input class="inp" id="prdPrice" type="number" placeholder="विक्री किंमत ₹ *">
+        <input class="inp" id="prdMrp" type="number" placeholder="मूळ किंमत (MRP) ₹ *">
+      </div>
+
+      <label class="sale-check-box">
+        <input type="checkbox" id="prdOnSale">
+        <span>🔥 या प्रॉडक्टवर ॲनिमेटेड 'SALE' टॅग दाखवा</span>
+      </label>
+
+      <textarea class="inp" id="prdDesc" rows="2" placeholder="वस्तूबद्दल माहिती (Product Description)"></textarea>
+
+      <input type="file" id="fileSlot0" accept="image/*" style="display:none" onchange="onProdFileSelect(this, 0)">
+      <input type="file" id="fileSlot1" accept="image/*" style="display:none" onchange="onProdFileSelect(this, 1)">
+      <input type="file" id="fileSlot2" accept="image/*" style="display:none" onchange="onProdFileSelect(this, 2)">
+      <input type="file" id="fileSlot3" accept="image/*" style="display:none" onchange="onProdFileSelect(this, 3)">
+
+      <div class="photo-upload-card">
+        <div style="font-size:12px;font-weight:800;color:var(--deep)">📷 वस्तूचे ३ ते ४ फोटो जोडा (गॅलरीतून निवडा किंवा URL पेस्ट करा):</div>
+        <div class="photo-slot-grid">
+          <div class="slot-card">
+            <button type="button" class="clear-btn" id="clrSlot0" onclick="removeSlotPhoto(0)">✕</button>
+            <div class="slot-preview-box"><span id="txtSlot0">मुख्य फोटो 1</span><img id="imgSlot0" alt=""></div>
+            <button type="button" class="pick-btn" onclick="document.getElementById('fileSlot0').click()">📷 फोटो 1 निवडा</button>
+            <input type="text" class="url-mini-inp" id="urlSlot0" placeholder="किंवा फोटो 1 लिंक" oninput="onProdUrlInput(0, this.value)">
+          </div>
+
+          <div class="slot-card">
+            <button type="button" class="clear-btn" id="clrSlot1" onclick="removeSlotPhoto(1)">✕</button>
+            <div class="slot-preview-box"><span id="txtSlot1">फोटो 2</span><img id="imgSlot1" alt=""></div>
+            <button type="button" class="pick-btn" onclick="document.getElementById('fileSlot1').click()">📷 फोटो 2 निवडा</button>
+            <input type="text" class="url-mini-inp" id="urlSlot1" placeholder="किंवा फोटो 2 लिंक" oninput="onProdUrlInput(1, this.value)">
+          </div>
+
+          <div class="slot-card">
+            <button type="button" class="clear-btn" id="clrSlot2" onclick="removeSlotPhoto(2)">✕</button>
+            <div class="slot-preview-box"><span id="txtSlot2">फोटो 3</span><img id="imgSlot2" alt=""></div>
+            <button type="button" class="pick-btn" onclick="document.getElementById('fileSlot2').click()">📷 फोटो 3 निवडा</button>
+            <input type="text" class="url-mini-inp" id="urlSlot2" placeholder="किंवा फोटो 3 लिंक" oninput="onProdUrlInput(2, this.value)">
+          </div>
+
+          <div class="slot-card">
+            <button type="button" class="clear-btn" id="clrSlot3" onclick="removeSlotPhoto(3)">✕</button>
+            <div class="slot-preview-box"><span id="txtSlot3">फोटो 4</span><img id="imgSlot3" alt=""></div>
+            <button type="button" class="pick-btn" onclick="document.getElementById('fileSlot3').click()">📷 फोटो 4 निवडा</button>
+            <input type="text" class="url-mini-inp" id="urlSlot3" placeholder="किंवा फोटो 4 लिंक" oninput="onProdUrlInput(3, this.value)">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="buy-btn" style="padding:13px;margin-bottom:16px;background:var(--green);font-size:14px" onclick="saveProduct()">✓ वस्तू आणि फोटो कायमस्वरूपी सेव्ह करा</button>
+      <h4 style="font-size:13px;margin-bottom:8px;color:var(--deep)">सध्याच्या वस्तू (Manage Products):</h4>
+      <div id="admProductsList"></div>
+    </div>
+
+    <!-- Admin Tab 2: Orders -->
+    <div id="admOrders" class="adm-sec">
+      <h4 style="margin-bottom:10px;font-size:14px;color:var(--purple)">ग्राहकांच्या आलेल्या ऑर्डर्स (फोटोसह):</h4>
+      <div id="admOrdersList"></div>
+    </div>
+
+    <!-- Admin Tab 3: Customers -->
+    <div id="admCustomers" class="adm-sec">
+      <div style="background:#fff3e0;padding:10px 12px;border-radius:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:800;font-size:14px;color:var(--deep)">👥 एकूण लॉगिन झालेले ग्राहक:</span>
+        <span class="badge" style="font-size:15px;padding:4px 12px" id="totalLoggedBadge">0</span>
+      </div>
+      <div id="admCustomersList"></div>
+    </div>
+
+    <!-- Admin Tab 4: Banners -->
+    <div id="admBanners" class="adm-sec">
+      <h4 style="margin-bottom:8px;font-size:14px">+ नवीन बॅनर फोटो जोडा (फक्त फोटो)</h4>
+      <input type="hidden" id="editBanId">
+      <input type="file" id="banFileInput" accept="image/*" style="display:none" onchange="uploadSingleImg(this,'banImg','banPrevImg',720)">
+      <button type="button" class="pick-btn" style="padding:11px;font-size:13px;margin-bottom:8px" onclick="document.getElementById('banFileInput').click()">
+        📷 गॅलरीतून बॅनर फोटो निवडा (Select Banner Photo)
+      </button>
+      <div style="text-align:center;margin-bottom:8px">
+        <img id="banPrevImg" style="max-height:100px;border-radius:8px;display:none;margin:0 auto;border:2px solid var(--purple)">
+      </div>
+      <input class="inp" id="banImg" placeholder="किंवा बॅनर फोटोची लिंक (URL) पेस्ट करा" oninput="previewUrlImg(this.value,'banPrevImg')">
+      <button type="button" class="buy-btn" style="padding:12px;margin-bottom:14px;background:var(--green)" onclick="saveBanner()">✓ बॅनर सेव्ह करा</button>
+      <div id="admBannersList"></div>
+    </div>
+
+    <!-- Admin Tab 5: Circular Categories -->
+    <div id="admCats" class="adm-sec">
+      <h4 style="margin-bottom:8px;font-size:14px">+ गोल स्टोरी कॅटेगरी जोडा / एडिट करा</h4>
+      <input type="hidden" id="editCatId">
+      <input class="inp" id="catNameInp" placeholder="कॅटेगरी नाव (उदा. Jewellery, Beauty, Mobiles)">
+      <input type="file" id="catFileInput" accept="image/*" style="display:none" onchange="uploadSingleImg(this,'catImgInp','catPrevImg',220)">
+      <button type="button" class="pick-btn" style="padding:11px;font-size:13px;margin-bottom:8px" onclick="document.getElementById('catFileInput').click()">
+        📷 गॅलरीतून कॅटेगरीचा गोल फोटो निवडा
+      </button>
+      <div style="text-align:center;margin-bottom:8px">
+        <img id="catPrevImg" style="width:66px;height:66px;border-radius:50%;object-fit:cover;display:none;margin:0 auto;border:2px solid var(--purple)">
+      </div>
+      <input class="inp" id="catImgInp" placeholder="किंवा फोटो लिंक टाका" oninput="previewUrlImg(this.value,'catPrevImg')">
+      <button type="button" class="buy-btn" style="padding:12px;margin-bottom:14px;background:var(--green)" onclick="saveCategory()">✓ कॅटेगरी सेव्ह करा</button>
+      <div id="admCatsList"></div>
+    </div>
+
+    <!-- Admin Tab 6: Editable Footer Settings -->
+    <div id="admFooter" class="adm-sec">
+      <h4 style="margin-bottom:8px;font-size:14px;color:var(--purple)">📝 खालच्या फुटरची संपूर्ण माहिती एडिट करा:</h4>
+
+      <span class="adm-lbl">⭐ ग्राहक विश्वास ओळ (Trust Badge Line):</span>
+      <input class="inp" id="ftTrustLine" placeholder="उदा. भोकरमधील ५००+ खूश ग्राहक...">
+
+      <span class="adm-lbl">⏰ दुकान उघडे असण्याची वेळ (Store Timing):</span>
+      <input class="inp" id="ftStoreTime" placeholder="उदा. सकाळी ९:०० ते रात्री ८:०० (सर्व दिवस सुरू)">
+
+      <span class="adm-lbl">१. पहिले हेडिंग आणि आतील ४ ओळी:</span>
+      <input class="inp" id="ftAboutTitle" placeholder="हेडिंग (उदा. आमच्याबद्दल माहिती)">
+      <textarea class="inp" id="ftAboutLines" rows="4" placeholder="सावली गोल्ड पॅलेस & ब्युटी शॉप&#10;१००% खात्रीशीर व दर्जेदार वस्तू"></textarea>
+
+      <span class="adm-lbl">२. दुसरे हेडिंग आणि व्हॉट्सॲप ग्रुप लिंक:</span>
+      <input class="inp" id="ftJoinTitle" placeholder="हेडिंग (उदा. आमच्याशी जोडले जा)">
+      <input class="inp" id="ftPartnerText" placeholder="उदा. डिलिव्हरी पार्टनर बना">
+      <input class="inp" id="ftWaGroupText" placeholder="उदा. व्हॉट्सॲप ग्रुपमध्ये सामील व्हा">
+      <input class="inp" id="ftWaGroupUrl" placeholder="WhatsApp Group Link पेस्ट करा">
+
+      <span class="adm-lbl">३. तिसरे हेडिंग आणि रिटर्न पॉलिसी मेसेज:</span>
+      <input class="inp" id="ftHelpTitle" placeholder="हेडिंग (उदा. ग्राहक मदत केंद्र)">
+      <textarea class="inp" id="ftReturnPolicy" rows="2" placeholder="वस्तू बदलण्याचे नियम"></textarea>
+      <input class="inp" id="ftDelivArea" placeholder="उदा. डिलिव्हरी एरिया: भोकर शहर व परिसर (४३१८०१)">
+
+      <span class="adm-lbl">४. पेमेंट पर्याय टॅग्स (स्वल्पविराम ',' देऊन लिहा):</span>
+      <input class="inp" id="ftPayTitle" placeholder="हेडिंग (उदा. स्वीकारले जाणारे पेमेंट पर्याय)">
+      <input class="inp" id="ftPayBadges" placeholder="💵 कॅश ऑन डिलिव्हरी, 📱 UPI / PhonePe / GPay">
+
+      <span class="adm-lbl">५. सोशल मीडिया लिंक्स (YouTube / Instagram / Facebook):</span>
+      <input class="inp" id="ftYtUrl" placeholder="YouTube Channel Link">
+      <input class="inp" id="ftIgUrl" placeholder="Instagram Link">
+      <input class="inp" id="ftFbUrl" placeholder="Facebook Link">
+
+      <span class="adm-lbl">६. दुकानाचा पत्ता आणि हेल्पलाईन नंबर:</span>
+      <textarea class="inp" id="ftAddress" rows="2" placeholder="पोलीस स्टेशन समोर, मेन रोड, भोकर, जि. नांदेड - ४३१८०१"></textarea>
+      <input class="inp" id="ftHelpline" placeholder="ग्राहक सेवा नंबर (उदा. +91 9823400945)">
+
+      <button type="button" class="buy-btn" style="padding:13px;background:var(--green)" onclick="saveFooterSettings()">✓ फुटर माहिती सेव्ह करा (Save Footer)</button>
+    </div>
+
+    <!-- Admin Tab 7: Logo, Store Settings & Backup -->
+    <div id="admSettings" class="adm-sec">
+      <h4 style="margin-bottom:8px;font-size:14px">दुकानाचा लोगो आणि नाव बदला</h4>
+      <input type="file" id="logoFileInput" accept="image/*" style="display:none" onchange="uploadSingleImg(this,'setLogoUrl','logoPrevImg',220)">
+      <button type="button" class="pick-btn" style="padding:11px;font-size:13px;margin-bottom:8px" onclick="document.getElementById('logoFileInput').click()">
+        🖼️ गॅलरीतून तुमचा लोगो निवडा (Select Store Logo)
+      </button>
+      <div style="text-align:center;margin-bottom:10px">
+        <img id="logoPrevImg" style="width:68px;height:68px;border-radius:12px;object-fit:cover;display:none;margin:0 auto;border:2px solid var(--purple)">
+      </div>
+      <input class="inp" id="setLogoUrl" placeholder="किंवा लोगो फोटो लिंक टाका" oninput="previewUrlImg(this.value,'logoPrevImg')">
+      <input class="inp" id="setBrand1" placeholder="नावाचा पहिला भाग (उदा. सावली)">
+      <input class="inp" id="setBrand2" placeholder="नावाचा दुसरा भाग (उदा. स्टोर)">
+      <input class="inp" id="setTagline" placeholder="खालची ओळ (उदा. फक्त एका तासात डिलेव्हरी)">
+      <input class="inp" id="setWhatsapp" placeholder="व्हॉट्सॲप नंबर 91 सह (उदा. 919823400945)">
+      <input class="inp" id="setPin" placeholder="एडमिन पिन (Default: 0705)">
+      <button type="button" class="buy-btn" style="padding:13px;background:var(--green);margin-bottom:14px" onclick="saveSettings()">✓ सर्व सेटिंग आणि लोगो सेव्ह करा</button>
+
+      <div style="border-top:1px solid #eee;padding-top:12px;margin-top:8px">
+        <h4 style="margin-bottom:8px;font-size:13px;color:var(--deep)">💾 डेटा बॅकअप (Data Backup / Restore):</h4>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="pick-btn" style="flex:1;padding:9px;background:#3b82f6" onclick="exportBackupFile()">⬇️ बॅकअप डाउनलोड</button>
+          <input type="file" id="restoreFileInp" accept=".json" style="display:none" onchange="importBackupFile(this)">
+          <button type="button" class="pick-btn" style="flex:1;padding:9px;background:#0f8a5f" onclick="document.getElementById('restoreFileInp').click()">⬆️ बॅकअप रिस्टोअर</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+  <button type="button" class="nav-item active" data-tab="Home" onclick="switchView('Home')">
+    <span class="ico">🏠</span><span id="navHome">होम</span>
+  </button>
+  <button type="button" class="nav-item" data-tab="Categories" onclick="switchView('Home');document.getElementById('categoriesList').scrollIntoView({behavior:'smooth'})">
+    <span class="ico">⭕</span><span id="navCat">कॅटेगरी</span>
+  </button>
+  <button type="button" class="nav-item" data-tab="Cart" onclick="switchView('Cart')">
+    <span class="ico">🛒</span><span id="navCart">बॅग</span>
+  </button>
+  <button type="button" class="nav-item" data-tab="Orders" onclick="switchView('Orders')">
+    <span class="ico">📦</span><span id="navOrders">ऑर्डर्स</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+// ================= DEFAULT INITIAL DATA =================
+const defaultFooter = {
+  backToTop: '⬆️ वर जा (Back to Top)',
+  trustLine: '⭐ भोकरमधील ५००+ खूश ग्राहक आणि १००% खात्रीशीर वस्तूंचा भरवसा!',
+  storeTime: '⏰ दुकान वेळ: सकाळी ९:०० ते रात्री ८:०० (सर्व दिवस सुरू)',
+  aboutTitle: 'आमच्याबद्दल माहिती',
+  aboutLines: 'सावली गोल्ड पॅलेस & ब्युटी शॉप\n१००% खात्रीशीर व दर्जेदार वस्तू\n१-ग्रॅम गोल्ड, बेन्टेक्स दागिने व सौंदर्य प्रसाधने\nभोकरमध्ये फक्त १ तासात घरपोच डिलिव्हरी!',
+  joinTitle: 'आमच्याशी जोडले जा',
+  partnerText: '🛵 डिलिव्हरी पार्टनर बना',
+  waGroupText: '💬 व्हॉट्सॲप ग्रुपमध्ये सामील व्हा (रोज नवीन ऑफर्स)',
+  waGroupUrl: '',
+  helpTitle: 'ग्राहक मदत केंद्र',
+  returnPolicy: 'वस्तू मिळाल्यानंतर २४ तासांच्या आत काही तक्रार असल्यास वस्तू बदलून मिळेल (Return & Exchange Available).',
+  delivArea: '📍 डिलिव्हरी एरिया: भोकर शहर व परिसर (४३१८०१)',
+  payTitle: 'स्वीकारले जाणारे पेमेंट पर्याय',
+  payBadges: '💵 कॅश ऑन डिलिव्हरी, 📱 UPI / GPay / PhonePe, 🎁 स्पेशल गिफ्ट पॅकिंग उपलब्ध',
+  ytUrl: 'https://youtube.com/@vediccore326',
+  igUrl: '',
+  fbUrl: '',
+  address: 'पोलीस स्टेशन समोर, मेन रोड, भोकर, जि. नांदेड - ४३१८०१',
+  helpline: '+91 9823400945'
+};
+
+const defaultData = {
+  lang: 'mr',
+  settings: {
+    logoUrl: '',
+    brand1: 'सावली',
+    brand2: 'स्टोर',
+    tagline: 'फक्त एका तासात डिलेव्हरी',
+    whatsapp: '919823400945',
+    pin: '1234'
+  },
+  footer: defaultFooter,
+  categories: [
+    { id: 'c0', name: 'All', img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=200&q=80' },
+    { id: 'c1', name: 'Jewellery', img: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=200&q=80' },
+    { id: 'c2', name: 'Beauty', img: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=200&q=80' },
+    { id: 'c3', name: 'Mobiles', img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=200&q=80' },
+    { id: 'c4', name: 'Fashion', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=200&q=80' },
+    { id: 'c5', name: 'Grocery', img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=200&q=80' }
+  ],
+  banners: [
+    { id: 1, img: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1000&q=80' },
+    { id: 2, img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1000&q=80' }
+  ],
+  products: [
+    {
+      id: 101,
+      name: '१-ग्रॅम गोल्ड महाराणी हार सेट (Royal 1-Gram Necklace)',
+      category: 'Jewellery',
+      price: 799,
+      mrp: 1599,
+      onSale: true,
+      desc: 'प्रीमियम १-ग्रॅम गोल्ड पॉलिश महाराणी हार सेट. लग्नसमारंभ आणि सणांसाठी खास डिझाईन.',
+      images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80']
+    }
+  ],
+  cart: [],
+  orders: [],
+  customers: [],
+  currentUser: null
+};
+
+let storeData = JSON.parse(JSON.stringify(defaultData));
+let activeCat = 'All';
+let selectedPay = 'Cash on Delivery (COD)';
+let slideIdx = 0;
+let slideTimer;
+let tempProdImages = ['', '', '', ''];
+let lastWaUrl = '';
+
+// ================= PERMANENT MULTI-KEY STORAGE + INDEXEDDB ENGINE =================
+const KEY_PRODS  = 'BM_PERM_PRODUCTS';
+const KEY_CATS   = 'BM_PERM_CATS';
+const KEY_BANS   = 'BM_PERM_BANNERS';
+const KEY_ORDS   = 'BM_PERM_ORDERS';
+const KEY_CUSTS  = 'BM_PERM_CUSTOMERS';
+const KEY_USER   = 'BM_PERM_CURR_USER';
+const KEY_SET    = 'BM_PERM_SETTINGS';
+const KEY_FOOT   = 'BM_PERM_FOOTER';
+const KEY_CART   = 'BM_PERM_CART';
+const DB_NAME    = 'SavaliPermanentDB';
+const STORE_NAME = 'state';
+
+function saveAllData(){
+  try { localStorage.setItem(KEY_PRODS, JSON.stringify(storeData.products)); } catch(e){}
+  try { localStorage.setItem(KEY_CATS, JSON.stringify(storeData.categories)); } catch(e){}
+  try { localStorage.setItem(KEY_BANS, JSON.stringify(storeData.banners)); } catch(e){}
+  try { localStorage.setItem(KEY_ORDS, JSON.stringify(storeData.orders)); } catch(e){}
+  try { localStorage.setItem(KEY_CUSTS, JSON.stringify(storeData.customers)); } catch(e){}
+  try { localStorage.setItem(KEY_USER, JSON.stringify(storeData.currentUser)); } catch(e){}
+  try { localStorage.setItem(KEY_SET, JSON.stringify(storeData.settings)); } catch(e){}
+  try { localStorage.setItem(KEY_FOOT, JSON.stringify(storeData.footer)); } catch(e){}
+  try { localStorage.setItem(KEY_CART, JSON.stringify(storeData.cart)); } catch(e){}
+  try { localStorage.setItem('SAVALI_MASTER_STORE_V6', JSON.stringify(storeData)); } catch(e){}
+
+  try {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = ev => ev.target.result.createObjectStore(STORE_NAME);
+    req.onsuccess = ev => {
+      const db = ev.target.result;
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put(storeData, 'root');
+    };
+  } catch(err){}
+}
+
+function loadAllData(callback){
+  let foundLocal = false;
+  try {
+    const v6Raw = localStorage.getItem('SAVALI_MASTER_STORE_V6');
+    if(v6Raw){
+      mergeLoadedState(JSON.parse(v6Raw));
+      foundLocal = true;
+    }
+
+    const p = localStorage.getItem(KEY_PRODS);
+    if(p){ storeData.products = JSON.parse(p); foundLocal = true; }
+
+    const c = localStorage.getItem(KEY_CATS);
+    if(c){ storeData.categories = JSON.parse(c); foundLocal = true; }
+
+    const b = localStorage.getItem(KEY_BANS);
+    if(b){ storeData.banners = JSON.parse(b); foundLocal = true; }
+
+    const o = localStorage.getItem(KEY_ORDS);
+    if(o){ storeData.orders = JSON.parse(o); foundLocal = true; }
+
+    const cu = localStorage.getItem(KEY_CUSTS);
+    if(cu){ storeData.customers = JSON.parse(cu); foundLocal = true; }
+
+    const u = localStorage.getItem(KEY_USER);
+    if(u){ storeData.currentUser = JSON.parse(u); foundLocal = true; }
+
+    const s = localStorage.getItem(KEY_SET);
+    if(s){ storeData.settings = { ...defaultData.settings, ...JSON.parse(s) }; foundLocal = true; }
+
+    const f = localStorage.getItem(KEY_FOOT);
+    if(f){ storeData.footer = { ...defaultFooter, ...JSON.parse(f) }; foundLocal = true; }
+
+    const ca = localStorage.getItem(KEY_CART);
+    if(ca){ storeData.cart = JSON.parse(ca); foundLocal = true; }
+  } catch(e){}
+
+  try {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = ev => ev.target.result.createObjectStore(STORE_NAME);
+    req.onsuccess = ev => {
+      const db = ev.target.result;
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const getReq = tx.objectStore(STORE_NAME).get('root');
+      getReq.onsuccess = () => {
+        if(getReq.result){
+          const idbData = getReq.result;
+          if(!foundLocal || (Array.isArray(idbData.products) && idbData.products.length > storeData.products.length)){
+            mergeLoadedState(idbData);
+          }
+        }
+        callback();
+      };
+      getReq.onerror = () => callback();
+    };
+    req.onerror = () => callback();
+  } catch(err){
+    callback();
+  }
+}
+
+function mergeLoadedState(saved){
+  if(!saved) return;
+  storeData = {
+    ...defaultData,
+    ...saved,
+    settings: { ...defaultData.settings, ...(saved.settings || {}) },
+    footer: { ...defaultFooter, ...(saved.footer || {}) },
+    categories: Array.isArray(saved.categories) && saved.categories.length ? saved.categories : defaultData.categories,
+    banners: Array.isArray(saved.banners) && saved.banners.length ? saved.banners : defaultData.banners,
+    products: Array.isArray(saved.products) && saved.products.length ? saved.products : defaultData.products,
+    customers: Array.isArray(saved.customers) && saved.customers.length ? saved.customers : defaultData.customers,
+    orders: Array.isArray(saved.orders) ? saved.orders : [],
+    cart: Array.isArray(saved.cart) ? saved.cart : []
+  };
+}
+
+// Export & Import JSON Backup
+function exportBackupFile(){
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storeData));
+  const dlAnchor = document.createElement('a');
+  dlAnchor.setAttribute("href", dataStr);
+  dlAnchor.setAttribute("download", "savali_store_backup.json");
+  document.body.appendChild(dlAnchor);
+  dlAnchor.click();
+  dlAnchor.remove();
+  notify('✅ बॅकअप फाईल डाउनलोड झाली!');
+}
+
+function importBackupFile(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      mergeLoadedState(imported);
+      saveAllData();
+      applyBranding();
+      renderCategories();
+      renderBanners();
+      renderProducts();
+      renderFooter();
+      renderAdminAll();
+      notify('✅ संपूर्ण बॅकअप यशस्वीरित्या रिस्टोअर झाला!');
+    } catch(err){
+      notify('चुकीची बॅकअप फाईल!');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ================= ULTRA-LIGHT IMAGE MICRO-COMPRESSOR =================
+function compressImageFile(file, maxW, callback){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.createElement('canvas');
+      let w = img.width;
+      let h = img.height;
+      if(w > maxW){
+        h = Math.round((h * maxW) / w);
+        w = maxW;
+      }
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
+      callback(dataUrl);
+    };
+    img.onerror = function(){
+      notify('फोटो वाचता आला नाही, कृपया दुसरा फोटो निवडा.');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function uploadSingleImg(input, targetInputId, previewImgId, maxW){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  compressImageFile(file, maxW, dataUrl => {
+    document.getElementById(targetInputId).value = dataUrl;
+    const prev = document.getElementById(previewImgId);
+    if(prev){
+      prev.src = dataUrl;
+      prev.style.display = 'block';
+    }
+    input.value = '';
+    notify('✅ फोटो निवडला! आता हिरवे Save बटण दाबा.');
+  });
+}
+
+function previewUrlImg(url, previewImgId){
+  const prev = document.getElementById(previewImgId);
+  if(!prev) return;
+  if(url && url.trim() !== ''){
+    prev.src = url.trim();
+    prev.style.display = 'block';
+  } else {
+    prev.style.display = 'none';
+  }
+}
+
+// 4-Slot Product Photo Uploader
+function onProdFileSelect(input, idx){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  compressImageFile(file, 420, dataUrl => {
+    tempProdImages[idx] = dataUrl;
+    document.getElementById('urlSlot'+idx).value = 'गॅलरी फोटो निवडला ✓';
+    refreshFourSlotsUI();
+    input.value = '';
+    notify(`✅ फोटो ${idx + 1} जोडला गेला!`);
+  });
+}
+
+function onProdUrlInput(idx, val){
+  if(val.startsWith('http') || val.startsWith('data:image')){
+    tempProdImages[idx] = val.trim();
+    refreshFourSlotsUI();
+  }
+}
+
+function removeSlotPhoto(idx){
+  tempProdImages[idx] = '';
+  document.getElementById('urlSlot'+idx).value = '';
+  refreshFourSlotsUI();
+}
+
+function refreshFourSlotsUI(){
+  for(let i=0; i<4; i++){
+    const imgEl = document.getElementById('imgSlot'+i);
+    const txtEl = document.getElementById('txtSlot'+i);
+    const clrBtn = document.getElementById('clrSlot'+i);
+    const urlInp = document.getElementById('urlSlot'+i);
+
+    if(tempProdImages[i] && tempProdImages[i].trim() !== ''){
+      imgEl.src = tempProdImages[i];
+      imgEl.style.display = 'block';
+      txtEl.style.display = 'none';
+      clrBtn.style.display = 'flex';
+      if(!tempProdImages[i].startsWith('data:')) urlInp.value = tempProdImages[i];
+    } else {
+      imgEl.src = '';
+      imgEl.style.display = 'none';
+      txtEl.style.display = 'block';
+      clrBtn.style.display = 'none';
+      urlInp.value = '';
+    }
+  }
+}
+
+// Language Dictionary
+const dict = {
+  mr: {
+    toggleBtn: '🌐 EN',
+    searchPh: 'दागिने, कॉस्मेटिक्स, मोबाईल, किराणा शोधा...',
+    bestSellers: 'लोकप्रिय वस्तू (Best Sellers)',
+    seeAll: 'सर्व पहा →',
+    emptyProd: 'कोणतीही वस्तू सापडली नाही.',
+    cartTitle: '🛒 तुमची शॉपिंग बॅग',
+    addrTitle: '१. डिलिव्हरी पत्ता (भोकर - 431801)',
+    payTitle: '२. पेमेंट पर्याय निवडा',
+    cod: '💵 कॅश ऑन डिलिव्हरी (घरपोच पैसे द्या)',
+    upi: '📱 ऑनलाईन UPI (PhonePe / Google Pay)',
+    totalPay: 'एकूण रक्कम:',
+    placeOrd: '✓ ऑर्डर कन्फर्म करा (Place Order)',
+    myOrders: '📦 माझ्या ऑर्डर्स (My Orders)',
+    noOrders: 'तुम्ही अजून कोणतीही ऑर्डर केलेली नाही.',
+    emptyBag: 'तुमची शॉपिंग बॅग रिकामी आहे.',
+    navHome: 'होम',
+    navCat: 'कॅटेगरी',
+    navCart: 'बॅग',
+    navOrders: 'ऑर्डर्स',
+    addedMsg: 'वस्तू बॅगमध्ये जोडली 🛒'
+  },
+  en: {
+    toggleBtn: '🌐 मराठी',
+    searchPh: 'Search jewellery, beauty, mobiles, grocery...',
+    bestSellers: 'Best Sellers in Bhokar',
+    seeAll: 'See All →',
+    emptyProd: 'No matching products found.',
+    cartTitle: '🛒 Your Shopping Cart',
+    addrTitle: '1. Delivery Address (Bhokar - 431801)',
+    payTitle: '2. Select Payment Method',
+    cod: '💵 Cash on Delivery (Pay at doorstep)',
+    upi: '📱 Instant UPI (PhonePe / Google Pay)',
+    totalPay: 'Total Payable:',
+    placeOrd: '✓ Place Order Now',
+    myOrders: '📦 My Orders History',
+    noOrders: 'You have not placed any orders yet.',
+    emptyBag: 'Your shopping cart is empty.',
+    navHome: 'Home',
+    navCat: 'Categories',
+    navCart: 'Cart',
+    navOrders: 'Orders',
+    addedMsg: 'Added to Cart 🛒'
+  }
+};
+
+const toast = document.getElementById('toast');
+let toastTimer;
+function notify(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 2300);
+}
+
+function showInfoPopup(title, text){
+  document.getElementById('infoPopupTitle').textContent = title;
+  document.getElementById('infoPopupText').textContent = text;
+  document.getElementById('infoPopupModal').classList.add('open');
+}
+
+// ================= NEW GPS LOCATION FUNCTION =================
+function getGPSLocation() {
+  if (navigator.geolocation) {
+    notify('लोकेशन शोधत आहे... कृपया वाट पहा.');
+    navigator.geolocation.getCurrentPosition(pos => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      document.getElementById('custGps').value = `https://maps.google.com/?q=${lat},${lon}`;
+      notify('✅ तुमचे अचूक लोकेशन मिळाले!');
+    }, err => {
+      notify('लोकेशन घेता आले नाही. कृपया मोबाईलचे GPS चालू करा.');
+    });
+  } else {
+    notify('तुमच्या मोबाईलमध्ये GPS सपोर्ट नाही.');
+  }
+}
+
+// ================= MANDATORY LOGIN GATE LOGIC =================
+function checkMandatoryLoginGate(){
+  const gate = document.getElementById('mandatoryLoginGate');
+  if(!storeData.currentUser || !storeData.currentUser.name || !storeData.currentUser.phone){
+    gate.classList.add('active');
+  } else {
+    gate.classList.remove('active');
+  }
+}
+
+function completeGateLogin(){
+  const name = document.getElementById('gateName').value.trim();
+  const phone = document.getElementById('gatePhone').value.trim();
+  const addr = document.getElementById('gateAddr').value.trim();
+  if(!name || phone.length < 10 || !addr){
+    notify('कृपया तुमचे पूर्ण नाव, १० अंकी मोबाईल नंबर आणि पत्ता भरा!');
+    return;
+  }
+  registerOrUpdateCustomer(name, phone, addr);
+  document.getElementById('mandatoryLoginGate').classList.remove('active');
+  notify('🎉 स्वागत आहे, ' + name + '!');
+}
+
+function applyBranding(){
+  const s = storeData.settings;
+  const logoBtn = document.getElementById('logoBtn');
+  const gateLogo = document.getElementById('gateLogoBox');
+  if(s.logoUrl && s.logoUrl.trim() !== ''){
+    logoBtn.innerHTML = `<img src="${s.logoUrl}" alt="Logo">`;
+    gateLogo.innerHTML = `<img src="${s.logoUrl}" alt="Logo">`;
+  } else {
+    const ch = (s.brand1 || 'S').charAt(0);
+    logoBtn.textContent = ch;
+    gateLogo.textContent = ch;
+  }
+  document.getElementById('brandHeading').innerHTML = `${s.brand1}<span>${s.brand2}</span>`;
+  document.getElementById('gateBrandTitle').textContent = `${s.brand1}${s.brand2}`;
+  document.getElementById('brandTagline').textContent = s.tagline;
+  document.getElementById('floatingWaBtn').href = `https://wa.me/${s.whatsapp}?text=नमस्कार, मला सावली ऑनलाईन स्टोअर मधून माहिती हवी आहे.`;
+
+  const topUser = document.getElementById('topUserText');
+  if(storeData.currentUser && storeData.currentUser.name){
+    topUser.textContent = storeData.currentUser.name.split(' ')[0];
+  } else {
+    topUser.textContent = 'Login';
+  }
+}
+
+// ================= RENDER DYNAMIC MARATHI FOOTER =================
+function renderFooter(){
+  const f = { ...defaultFooter, ...(storeData.footer || {}) };
+  const s = storeData.settings;
+
+  const aboutItemsHtml = (f.aboutLines || '')
+    .split('\n')
+    .filter(line => line.trim() !== '')
+    .map(line => `<li onclick="switchView('Home')">✨ ${line.trim()}</li>`)
+    .join('');
+
+  const payBadgesHtml = (f.payBadges || '')
+    .split(',')
+    .filter(b => b.trim() !== '')
+    .map(b => `<span class="pay-badge-card">${b.trim()}</span>`)
+    .join('');
+
+  const waGroupAction = f.waGroupUrl && f.waGroupUrl.trim() !== ''
+    ? `window.open('${f.waGroupUrl.trim()}','_blank')`
+    : `window.open('https://wa.me/${s.whatsapp}?text=नमस्कार, मला सावली स्टोरच्या व्हॉट्सॲप ग्रुपमध्ये जॉईन करा','_blank')`;
+
+  let socialHtml = '';
+  if(f.ytUrl) socialHtml += `<a href="${f.ytUrl}" target="_blank" class="social-ico" title="YouTube"><i class="fab fa-youtube" style="color:#ff4e45"></i></a>`;
+  if(f.igUrl) socialHtml += `<a href="${f.igUrl}" target="_blank" class="social-ico" title="Instagram"><i class="fab fa-instagram" style="color:#ff7a00"></i></a>`;
+  if(f.fbUrl) socialHtml += `<a href="${f.fbUrl}" target="_blank" class="social-ico" title="Facebook"><i class="fab fa-facebook-f" style="color:#4da3ff"></i></a>`;
+  socialHtml += `<a href="https://wa.me/${s.whatsapp}" target="_blank" class="social-ico" title="WhatsApp"><i class="fab fa-whatsapp" style="color:#25d366"></i></a>`;
+
+  const container = document.getElementById('footerContainer');
+  container.innerHTML = `
+    <div class="trust-strip">${f.trustLine}</div>
+    <div class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">${f.backToTop}</div>
+    <footer class="site-footer">
+      <div class="store-time-box">
+        <span>${f.storeTime}</span>
+      </div>
+
+      <div class="footer-block">
+        <h4>${f.aboutTitle}</h4>
+        <ul>${aboutItemsHtml}</ul>
+      </div>
+
+      <div class="footer-block">
+        <h4>${f.joinTitle}</h4>
+        <ul>
+          <li onclick="window.open('https://wa.me/${s.whatsapp}?text=नमस्कार, मला डिलिव्हरी पार्टनर बनायचे आहे','_blank')">${f.partnerText}</li>
+          <li onclick="${waGroupAction}">${f.waGroupText}</li>
+        </ul>
+      </div>
+
+      <div class="footer-block">
+        <h4>${f.helpTitle}</h4>
+        <ul>
+          <li onclick="switchView('Orders')">👤 माझे अकाउंट (My Account)</li>
+          <li onclick="switchView('Orders')">📦 माझ्या ऑर्डर्स (My Orders)</li>
+          <li onclick="showInfoPopup('वस्तू बदलणे व परतावा नियम', \`${(f.returnPolicy || '').replace(/`/g,'')}\`)">🔄 वस्तू बदलणे व परतावा नियम (Return Policy)</li>
+          <li onclick="showInfoPopup('डिलिव्हरी एरिया माहिती', \`${(f.delivArea || '').replace(/`/g,'')}\`)">${f.delivArea}</li>
+          <li onclick="window.open('https://wa.me/${s.whatsapp}?text=नमस्कार, मला माझ्या ऑर्डरबद्दल मदत हवी आहे','_blank')">🎧 मदत व तक्रार केंद्र (Help Centre)</li>
+        </ul>
+        <a href="https://wa.me/${s.whatsapp}?text=नमस्कार, मला सावली स्टोर मधून माहिती हवी आहे" target="_blank" class="quick-wa-btn">
+          <i class="fab fa-whatsapp" style="font-size:17px"></i> WhatsApp वर चॅट करा
+        </a>
+        <div class="social-row">${socialHtml}</div>
+      </div>
+
+      <div class="footer-block" style="margin-bottom:16px">
+        <h4>${f.payTitle}</h4>
+        <div class="pay-methods-row">${payBadgesHtml}</div>
+      </div>
+
+      <div class="footer-addr">
+        <div>📍 <b>पत्ता:</b> ${f.address}</div>
+        <div style="margin-top:4px">📞 <b>ग्राहक सेवा क्र.:</b> <a href="tel:${f.helpline}" style="color:var(--gold);text-decoration:none;font-weight:800">${f.helpline}</a></div>
+      </div>
+    </footer>
+  `;
+}
+
+function applyLanguage(){
+  const t = dict[storeData.lang];
+  document.getElementById('langBtn').textContent = t.toggleBtn;
+  document.getElementById('search').placeholder = t.searchPh;
+  if(activeCat === 'All') document.getElementById('secTitle').textContent = t.bestSellers;
+  document.getElementById('seeAllBtn').textContent = t.seeAll;
+  document.getElementById('empty').textContent = t.emptyProd;
+  document.getElementById('addrHeading').textContent = t.addrTitle;
+  document.getElementById('payHeading').textContent = t.payTitle;
+  document.getElementById('codText').textContent = t.cod;
+  document.getElementById('upiText').textContent = t.upi;
+  document.getElementById('totalPayLabel').textContent = t.totalPay;
+  document.getElementById('placeOrderBtn').textContent = t.placeOrd;
+  document.getElementById('myOrdersHeading').textContent = t.myOrders;
+  document.getElementById('navHome').textContent = t.navHome;
+  document.getElementById('navCat').textContent = t.navCat;
+  document.getElementById('navCart').textContent = t.navCart;
+  document.getElementById('navOrders').textContent = t.navOrders;
+  renderProducts();
+}
+
+function toggleLanguage(){
+  storeData.lang = storeData.lang === 'mr' ? 'en' : 'mr';
+  saveAllData();
+  applyLanguage();
+}
+
+// Render Categories
+function renderCategories(){
+  const box = document.getElementById('categoriesList');
+  box.innerHTML = '';
+  storeData.categories.forEach(c => {
+    const active = activeCat === c.name ? 'active' : '';
+    box.innerHTML += `
+      <button type="button" class="category ${active}" onclick="selectCategory('${c.name}')">
+        <div class="story-ring"><img src="${c.img}" alt="${c.name}"></div>
+        <span>${c.name}</span>
+      </button>
+    `;
+  });
+  const sel = document.getElementById('prdCat');
+  if(sel){
+    sel.innerHTML = storeData.categories.filter(x=>x.name!=='All').map(x=>`<option value="${x.name}">${x.name}</option>`).join('');
+  }
+}
+
+function selectCategory(cat){
+  activeCat = cat;
+  switchView('Home');
+  document.getElementById('secTitle').textContent = cat === 'All' ? dict[storeData.lang].bestSellers : cat;
+  renderCategories();
+  filterProducts(document.getElementById('search').value);
+}
+
+// Render Banners
+function renderBanners(){
+  const box = document.getElementById('bannersList');
+  const dots = document.getElementById('sliderDots');
+  box.innerHTML = '';
+  dots.innerHTML = '';
+  storeData.banners.forEach((b, i) => {
+    box.innerHTML += `<article class="banner"><img src="${b.img}" alt="Banner"></article>`;
+    dots.innerHTML += `<button type="button" class="s-dot ${i===0?'active':''}" onclick="scrollBanner(${i})"></button>`;
+  });
+  clearInterval(slideTimer);
+  if(storeData.banners.length > 1){
+    slideTimer = setInterval(()=>{
+      slideIdx = (slideIdx + 1) % storeData.banners.length;
+      scrollBanner(slideIdx);
+    }, 3500);
+  }
+}
+
+function scrollBanner(idx){
+  slideIdx = idx;
+  const box = document.getElementById('bannersList');
+  const cards = box.querySelectorAll('.banner');
+  if(cards[idx]) box.scrollTo({ left: cards[idx].offsetLeft, behavior: 'smooth' });
+  document.querySelectorAll('.s-dot').forEach((d, i)=>d.classList.toggle('active', i===idx));
+}
+
+function getProdImages(p){
+  if(Array.isArray(p.images) && p.images.length > 0) return p.images;
+  if(p.img) return [p.img];
+  return ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=600&q=80'];
+}
+
+// Render Products Grid
+function renderProducts(){
+  const grid = document.getElementById('products');
+  grid.innerHTML = '';
+  storeData.products.forEach(p => {
+    const imgs = getProdImages(p);
+    const off = Math.max(1, Math.round(((p.mrp - p.price) / p.mrp) * 100));
+    const saleBadgeHtml = p.onSale ? `<span class="sale-anim-badge">🔥 SALE</span>` : '';
+
+    grid.innerHTML += `
+      <article class="product" data-name="${p.name}" data-category="${p.category}">
+        <div class="photo" onclick="openProductDetail(${p.id})">
+          <img src="${imgs[0]}" alt="${p.name}" loading="lazy">
+          <span class="off">${off}% OFF</span>
+          ${saleBadgeHtml}
+          ${imgs.length > 1 ? `<span class="multi-pic-badge">📷 ${imgs.length}</span>` : ''}
+        </div>
+        <div class="product-info">
+          <h3 onclick="openProductDetail(${p.id})">${p.name}</h3>
+          <span class="price">₹${p.price} <del>₹${p.mrp}</del></span>
+          <div class="btn-group">
+            <button type="button" class="add" onclick="addToCart(${p.id}, false)"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+            <button type="button" class="buy-btn" onclick="buyNow(${p.id})"><i class="fas fa-bolt"></i> Buy Now</button>
+          </div>
+        </div>
+      </article>
+    `;
+  });
+  filterProducts(document.getElementById('search').value);
+}
+
+// ================= OPEN PRODUCT DETAIL PAGE WITH FINGER TOUCH SWIPE GALLERY =================
+function openProductDetail(id){
+  const p = storeData.products.find(x => x.id === id);
+  if(!p) return;
+  const imgs = getProdImages(p);
+  const saved = p.mrp - p.price;
+  const off = Math.max(1, Math.round((saved / p.mrp) * 100));
+  const saleBadgeHtml = p.onSale ? `<span class="sale-anim-badge" style="top:12px;right:12px;font-size:12px">🔥 SALE OFFER</span>` : '';
+
+  const slidesHtml = imgs.map(url => `
+    <div class="detail-slide">
+      <img src="${url}" alt="${p.name}">
+    </div>
+  `).join('');
+
+  const dotsHtml = imgs.length > 1 ? imgs.map((_, idx) => `
+    <span class="sw-dot ${idx===0?'active':''}"></span>
+  `).join('') : '';
+
+  const thumbsHtml = imgs.map((url, idx) => `
+    <div class="detail-thumb ${idx===0?'active':''}" onclick="scrollToDetailSlide(${idx})">
+      <img src="${url}" alt="">
+    </div>
+  `).join('');
+
+  const box = document.getElementById('detailContainer');
+  box.innerHTML = `
+    <button type="button" class="back-btn" onclick="switchView('Home')">← मागे जा (Back to Products)</button>
+    <div class="detail-img-wrap">
+      ${saleBadgeHtml}
+      <div class="detail-swipe-track" id="detailSwipeTrack" onscroll="onDetailTrackScroll(this)">
+        ${slidesHtml}
+      </div>
+      <span class="assured-tag">BHOKAR ASSURED</span>
+    </div>
+    <div class="swipe-hint-dots" id="detailSwipeDots">${dotsHtml}</div>
+    <div class="detail-thumbs-row" id="detailThumbsRow">${thumbsHtml}</div>
+    <div class="detail-cat">${p.category} • SKU: BM-${p.id}</div>
+    <h1 class="detail-title">${p.name}</h1>
+    <div class="detail-rating">
+      <span>★★★★☆</span>
+      <span style="color:var(--purple);text-decoration:underline;font-weight:700">145 ratings</span>
+      <span style="color:var(--green);font-weight:800">● In Stock</span>
+    </div>
+    <div class="detail-price-row">
+      <span class="detail-price">₹${p.price}</span>
+      <span class="detail-mrp">₹${p.mrp}</span>
+      <span class="detail-save">Save ₹${saved} (${off}% OFF)</span>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Inclusive of all taxes. Free express delivery across Bhokar town (431801).</p>
+    <p style="font-size:13px;color:var(--ink);background:#fdf8f5;padding:10px;border-radius:8px;margin-bottom:12px;line-height:1.4">
+      ${p.desc || 'उत्कृष्ट दर्जाची खात्रीशीर वस्तू. भोकर शहरात घरपोच डिलिव्हरी उपलब्ध.'}
+    </p>
+
+    <div class="delivery-check-box">
+      <h4>🚚 Check Delivery for Bhokar & Villages</h4>
+      <div class="pin-row">
+        <input type="text" id="detailPinInp" value="431801" maxlength="6">
+        <button type="button" onclick="notify('✅ Express Same-Day Delivery available in Bhokar (431801)!')">Check</button>
+      </div>
+      <div style="font-size:12px;color:#0d6847;font-weight:700">● Express Same-Day Delivery available in Bhokar (431801)!</div>
+    </div>
+
+    <div class="btn-group" style="gap:10px;margin-top:14px">
+      <button type="button" class="add" style="padding:13px;font-size:15px" onclick="addToCart(${p.id}, false)"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+      <button type="button" class="buy-btn" style="padding:13px;font-size:15px" onclick="buyNow(${p.id})"><i class="fas fa-bolt"></i> Buy Now</button>
+    </div>
+  `;
+  switchView('Detail');
+}
+
+function scrollToDetailSlide(idx){
+  const track = document.getElementById('detailSwipeTrack');
+  if(!track) return;
+  const slideW = track.clientWidth;
+  track.scrollTo({ left: slideW * idx, behavior: 'smooth' });
+  updateDetailActiveIndicators(idx);
+}
+
+function onDetailTrackScroll(track){
+  const idx = Math.round(track.scrollLeft / track.clientWidth);
+  updateDetailActiveIndicators(idx);
+}
+
+function updateDetailActiveIndicators(activeIdx){
+  document.querySelectorAll('#detailThumbsRow .detail-thumb').forEach((t, i) => {
+    t.classList.toggle('active', i === activeIdx);
+  });
+  document.querySelectorAll('#detailSwipeDots .sw-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === activeIdx);
+  });
+}
+
+function filterProducts(q){
+  let shown = 0;
+  document.querySelectorAll('.product').forEach(card => {
+    const matchCat = activeCat === 'All' || card.dataset.category.toLowerCase() === activeCat.toLowerCase();
+    const matchQ = (card.dataset.name + ' ' + card.dataset.category).toLowerCase().includes(q.toLowerCase());
+    const show = matchCat && matchQ;
+    card.style.display = show ? '' : 'none';
+    if(show) shown++;
+  });
+  document.getElementById('empty').style.display = shown ? 'none' : 'block';
+}
+document.getElementById('search').addEventListener('input', e => {
+  switchView('Home');
+  filterProducts(e.target.value);
+});
+
+// Customer Login & Profile
+function openLoginModal(){
+  if(storeData.currentUser){
+    document.getElementById('loginName').value = storeData.currentUser.name || '';
+    document.getElementById('loginPhone').value = storeData.currentUser.phone || '';
+    document.getElementById('loginAddr').value = storeData.currentUser.addr || '';
+  }
+  document.getElementById('loginModal').classList.add('open');
+}
+
+function registerOrUpdateCustomer(name, phone, addr){
+  const nowStr = new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
+  storeData.currentUser = { name, phone, addr, date: nowStr };
+
+  if(!Array.isArray(storeData.customers)) storeData.customers = [];
+  const existingIdx = storeData.customers.findIndex(c => c.phone === phone);
+  if(existingIdx > -1){
+    storeData.customers[existingIdx] = { ...storeData.customers[existingIdx], name, addr, date: nowStr };
+  } else {
+    storeData.customers.unshift({ id: Date.now(), name, phone, addr, date: nowStr });
+  }
+  saveAllData();
+  applyBranding();
+  updateBadges();
+}
+
+function saveCustomerLogin(){
+  const name = document.getElementById('loginName').value.trim();
+  const phone = document.getElementById('loginPhone').value.trim();
+  const addr = document.getElementById('loginAddr').value.trim();
+  if(!name || !phone){
+    notify('कृपया तुमचे नाव आणि मोबाईल नंबर टाका!');
+    return;
+  }
+  registerOrUpdateCustomer(name, phone, addr);
+  document.getElementById('loginModal').classList.remove('open');
+  notify('✅ तुमची माहिती सेव्ह झाली आहे!');
+  renderCustomerOrders();
+}
+
+// Cart & Buy Now
+function addToCart(id, silent){
+  const p = storeData.products.find(x => x.id === id);
+  if(!p) return;
+  const imgs = getProdImages(p);
+  const item = storeData.cart.find(x => x.id === id);
+  if(item) item.qty++;
+  else storeData.cart.push({ id: p.id, name: p.name, price: p.price, img: imgs[0], qty: 1 });
+  updateBadges();
+  saveAllData();
+  if(!silent) notify(dict[storeData.lang].addedMsg);
+}
+
+function buyNow(id){
+  addToCart(id, true);
+  switchView('Cart');
+}
+
+function changeQty(id, d){
+  const idx = storeData.cart.findIndex(x => x.id === id);
+  if(idx > -1){
+    storeData.cart[idx].qty += d;
+    if(storeData.cart[idx].qty <= 0) storeData.cart.splice(idx, 1);
+    updateBadges();
+    saveAllData();
+    renderCartView();
+  }
+}
+
+function updateBadges(){
+  document.getElementById('cartBadge').textContent = storeData.cart.reduce((s,i)=>s+i.qty, 0);
+  document.getElementById('admOrdCount').textContent = storeData.orders.length;
+  document.getElementById('admCustCount').textContent = storeData.customers.length;
+  document.getElementById('totalLoggedBadge').textContent = storeData.customers.length;
+}
+
+function switchView(tab){
+  document.querySelectorAll('.view-sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  if(tab === 'Cart'){
+    document.getElementById('viewCart').classList.add('active');
+    renderCartView();
+  } else if(tab === 'Orders'){
+    document.getElementById('viewOrders').classList.add('active');
+    renderCustomerOrders();
+  } else if(tab === 'Detail'){
+    document.getElementById('viewDetail').classList.add('active');
+  } else {
+    document.getElementById('viewHome').classList.add('active');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderCartView(){
+  const box = document.getElementById('cartItemsContainer');
+  const count = storeData.cart.reduce((s,i)=>s+i.qty, 0);
+  document.getElementById('cartHeading').innerHTML = `${dict[storeData.lang].cartTitle} (${count})`;
+
+  if(storeData.currentUser){
+    document.getElementById('custName').value = storeData.currentUser.name || '';
+    document.getElementById('custPhone').value = storeData.currentUser.phone || '';
+    document.getElementById('custAddr').value = storeData.currentUser.addr || '';
+  }
+
+  if(storeData.cart.length === 0){
+    box.innerHTML = `<p style="color:var(--muted);font-size:14px">${dict[storeData.lang].emptyBag}</p>`;
+    document.getElementById('cartGrandTotal').textContent = '₹0';
+    return;
+  }
+  let total = 0;
+  box.innerHTML = '';
+  storeData.cart.forEach(i => {
+    const sub = i.price * i.qty;
+    total += sub;
+    box.innerHTML += `
+      <div class="adm-row">
+        <img src="${i.img}" alt="">
+        <div style="flex:1">
+          <div style="font-weight:700">${i.name}</div>
+          <div style="color:var(--purple);font-weight:800">₹${i.price} × ${i.qty} = ₹${sub}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button type="button" onclick="changeQty(${i.id},-1)" style="width:28px;height:28px;border-radius:6px;border:1px solid #ccc;background:#fff;font-weight:900">-</button>
+          <strong>${i.qty}</strong>
+          <button type="button" onclick="changeQty(${i.id},1)" style="width:28px;height:28px;border-radius:6px;border:1px solid #ccc;background:#fff;font-weight:900">+</button>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('cartGrandTotal').textContent = '₹' + total;
+}
+
+function selectPayMode(mode, el){
+  selectedPay = mode;
+  document.querySelectorAll('.pay-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ================= UPDATED ORDER PLACEMENT (GPS & LANDMARK) =================
+function placeOrderNow(){
+  if(storeData.cart.length === 0){ notify(dict[storeData.lang].emptyBag); return; }
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const addr = document.getElementById('custAddr').value.trim();
+  const landmark = document.getElementById('custLandmark').value.trim();
+  const gps = document.getElementById('custGps').value;
+
+  if(!name || !phone || !addr || !landmark){
+    notify('कृपया नाव, मोबाईल नंबर, पत्ता आणि जवळची खूण भरा!');
+    return;
+  }
+
+  const fullAddr = addr + " (खूण: " + landmark + ")";
+  registerOrUpdateCustomer(name, phone, addr);
+
+  const total = storeData.cart.reduce((s,i)=>s+(i.price*i.qty), 0);
+  const ord = {
+    id: 'ORD' + Math.floor(1000 + Math.random()*9000),
+    date: new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' }),
+    name, phone, addr: fullAddr, pay: selectedPay,
+    items: [...storeData.cart], total, status: 'Pending'
+  };
+  storeData.orders.unshift(ord);
+  storeData.cart = [];
+  updateBadges();
+  saveAllData();
+
+  let msg = `*🛍️ नवीन ऑर्डर (#${ord.id}) - ${storeData.settings.brand1}${storeData.settings.brand2}*%0A`;
+  msg += `*ग्राहक:* ${name} (${phone})%0A*पत्ता:* ${addr}%0A*जवळची खूण:* ${landmark}%0A`;
+  if(gps) { msg += `*📍 लोकेशन (Map):* ${gps}%0A`; }
+  msg += `*पेमेंट:* ${selectedPay}%0A-----------------%0A`;
+  ord.items.forEach((x,idx)=>{ msg += `${idx+1}. ${x.name} (x${x.qty}) - ₹${x.price*x.qty}%0A`; });
+  msg += `-----------------%0A*एकूण बिल: ₹${total}*`;
+  
+  lastWaUrl = `https://wa.me/${storeData.settings.whatsapp}?text=${msg}`;
+
+  document.getElementById('tyOrderSummary').innerHTML = `
+    <b>ऑर्डर आयडी:</b> #${ord.id}<br>
+    <b>ग्राहक:</b> ${name}<br>
+    <b>एकूण रक्कम:</b> <span style="color:var(--green);font-weight:900">₹${total}</span> (${selectedPay})
+  `;
+  document.getElementById('thankYouModal').classList.add('open');
+}
+
+function sendLastOrderWhatsApp(){
+  if(lastWaUrl) window.open(lastWaUrl, '_blank');
+  closeThankYouModal();
+}
+
+function closeThankYouModal(){
+  document.getElementById('thankYouModal').classList.remove('open');
+  switchView('Orders');
+}
+
+function renderCustomerOrders(){
+  const userCard = document.getElementById('loggedUserCard');
+  if(storeData.currentUser && storeData.currentUser.name){
+    userCard.innerHTML = `<b>नाव:</b> ${storeData.currentUser.name} | <b>मोबाईल:</b> ${storeData.currentUser.phone}<br><b>पत्ता:</b> ${storeData.currentUser.addr || 'भोकर'}`;
+  } else {
+    userCard.innerHTML = `तुम्ही अजून लॉगिन केलेले नाही.`;
+  }
+
+  const box = document.getElementById('customerOrdersContainer');
+  if(storeData.orders.length === 0){
+    box.innerHTML = `<p style="color:var(--muted);font-size:14px">${dict[storeData.lang].noOrders}</p>`;
+    return;
+  }
+  box.innerHTML = '';
+  storeData.orders.forEach(o => {
+    const itemsHtml = o.items.map(i=>`
+      <div class="ord-prod-row">
+        <img src="${i.img}" alt="">
+        <div style="flex:1;font-size:13px">
+          <b>${i.name}</b><br>
+          <span style="color:var(--purple);font-weight:700">₹${i.price} × ${i.qty} = ₹${i.price*i.qty}</span>
+        </div>
+      </div>
+    `).join('');
+    box.innerHTML += `
+      <div class="order-item">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <strong style="font-size:14px;color:var(--purple)">Order #${o.id}</strong>
+          <span class="status-pill st-${o.status}">${o.status}</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">📅 ${o.date} | ${o.pay}</div>
+        <div>${itemsHtml}</div>
+        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-top:6px">
+          <span>📍 ${o.addr}</span>
+          <span style="color:var(--green)">Total: ₹${o.total}</span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// ================= SECRET ADMIN PANEL FUNCTIONS =================
+function openAdminPrompt(){
+  const p = prompt('🔐 Admin PIN टाका (Default: ' + storeData.settings.pin + '):');
+  if(p === storeData.settings.pin){
+    const s = storeData.settings;
+    document.getElementById('setLogoUrl').value = s.logoUrl;
+    const logoPrev = document.getElementById('logoPrevImg');
+    if(s.logoUrl){ logoPrev.src = s.logoUrl; logoPrev.style.display = 'block'; }
+    else { logoPrev.style.display = 'none'; }
+
+    document.getElementById('setBrand1').value = s.brand1;
+    document.getElementById('setBrand2').value = s.brand2;
+    document.getElementById('setTagline').value = s.tagline;
+    document.getElementById('setWhatsapp').value = s.whatsapp;
+    document.getElementById('setPin').value = s.pin;
+
+    // Populate Editable Footer Fields
+    const f = { ...defaultFooter, ...(storeData.footer || {}) };
+    document.getElementById('ftTrustLine').value = f.trustLine;
+    document.getElementById('ftStoreTime').value = f.storeTime;
+    document.getElementById('ftAboutTitle').value = f.aboutTitle;
+    document.getElementById('ftAboutLines').value = f.aboutLines;
+    document.getElementById('ftJoinTitle').value = f.joinTitle;
+    document.getElementById('ftPartnerText').value = f.partnerText;
+    document.getElementById('ftWaGroupText').value = f.waGroupText;
+    document.getElementById('ftWaGroupUrl').value = f.waGroupUrl;
+    document.getElementById('ftHelpTitle').value = f.helpTitle;
+    document.getElementById('ftReturnPolicy').value = f.returnPolicy;
+    document.getElementById('ftDelivArea').value = f.delivArea;
+    document.getElementById('ftPayTitle').value = f.payTitle;
+    document.getElementById('ftPayBadges').value = f.payBadges;
+    document.getElementById('ftYtUrl').value = f.ytUrl;
+    document.getElementById('ftIgUrl').value = f.igUrl;
+    document.getElementById('ftFbUrl').value = f.fbUrl;
+    document.getElementById('ftAddress').value = f.address;
+    document.getElementById('ftHelpline').value = f.helpline;
+
+    renderAdminAll();
+    document.getElementById('adminModal').classList.add('open');
+  } else if(p !== null){
+    notify('चुकीचा पिन!');
+  }
+}
+
+function closeAdmin(){
+  document.getElementById('adminModal').classList.remove('open');
+}
+
+function openAdmTab(id, btn){
+  document.querySelectorAll('.adm-sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function renderAdminAll(){
+  updateBadges();
+
+  // 1. Products List
+  const prdBox = document.getElementById('admProductsList');
+  prdBox.innerHTML = '';
+  storeData.products.forEach(p => {
+    const imgs = getProdImages(p);
+    prdBox.innerHTML += `
+      <div class="adm-row">
+        <img src="${imgs[0]}" alt="">
+        <div style="flex:1">
+          <b>${p.name}</b> ${p.onSale ? '<span style="background:#e5232d;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px">🔥 SALE</span>' : ''}<br>
+          <small>₹${p.price} (MRP ₹${p.mrp}) • ${p.category} • 📷 ${imgs.length} फोटो</small>
+        </div>
+        <button type="button" class="sm-btn" style="background:#f5a623" onclick="editProduct(${p.id})">Edit</button>
+        <button type="button" class="sm-btn" style="background:var(--red)" onclick="delProduct(${p.id})">Del</button>
+      </div>
+    `;
+  });
+
+  // 2. Orders
+  const ordBox = document.getElementById('admOrdersList');
+  ordBox.innerHTML = storeData.orders.length ? '' : '<p style="color:#777;font-size:13px">अजून कोणतीही ऑर्डर नाही.</p>';
+  storeData.orders.forEach((o, idx) => {
+    const itmsWithPhotos = o.items.map(x=>`
+      <div class="ord-prod-row">
+        <img src="${x.img}" alt="">
+        <div style="flex:1;font-size:12px">
+          <b>${x.name}</b><br>
+          <span>किंमत: ₹${x.price} × ${x.qty} नग = <b>₹${x.price*x.qty}</b></span>
+        </div>
+      </div>
+    `).join('');
+
+    ordBox.innerHTML += `
+      <div class="order-item">
+        <div style="display:flex;justify-content:space-between;font-weight:800;font-size:13px">
+          <span>#${o.id} — ${o.name} (📞 ${o.phone})</span>
+          <span style="color:var(--purple);font-size:15px">₹${o.total}</span>
+        </div>
+        <div style="font-size:12px;color:#555;margin:4px 0 8px">📍 ${o.addr} | 📅 ${o.date} | ${o.pay}</div>
+        <div style="margin-bottom:8px">${itmsWithPhotos}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <select onchange="changeOrdStatus(${idx},this.value)" style="padding:6px;border-radius:6px;font-size:12px;font-weight:800">
+            <option value="Pending" ${o.status==='Pending'?'selected':''}>⏳ Pending</option>
+            <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>✅ Confirmed</option>
+            <option value="Delivered" ${o.status==='Delivered'?'selected':''}>🚚 Delivered</option>
+          </select>
+          <button type="button" class="sm-btn" style="background:var(--red)" onclick="delOrder(${idx})">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+
+  // 3. Customers
+  const custBox = document.getElementById('admCustomersList');
+  custBox.innerHTML = storeData.customers.length ? '' : '<p style="color:#777;font-size:13px">अजून कोणीही लॉगिन केलेले नाही.</p>';
+  storeData.customers.forEach((c, idx) => {
+    custBox.innerHTML += `
+      <div class="order-item" style="background:#fff">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <strong style="font-size:14px;color:var(--deep)">👤 ${c.name}</strong>
+          <a href="tel:${c.phone}" style="font-size:12px;font-weight:800;color:var(--green);text-decoration:none">📞 ${c.phone}</a>
+        </div>
+        <div style="font-size:12px;color:#444;margin-bottom:4px">📍 <b>पत्ता:</b> ${c.addr || 'भोकर'}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)">
+          <span>🕒 लॉगिन वेळ: ${c.date}</span>
+          <button type="button" class="sm-btn" style="background:var(--red);padding:4px 8px;font-size:11px" onclick="delCustomer(${idx})">काढा</button>
+        </div>
+      </div>
+    `;
+  });
+
+  // 4. Banners
+  const banBox = document.getElementById('admBannersList');
+  banBox.innerHTML = '';
+  storeData.banners.forEach((b, i) => {
+    banBox.innerHTML += `
+      <div class="adm-row">
+        <img src="${b.img}" style="width:80px;height:42px" alt="">
+        <div style="flex:1;font-weight:700">बॅनर #${i+1}</div>
+        <button type="button" class="sm-btn" style="background:#f5a623" onclick="editBanner(${b.id})">Edit</button>
+        <button type="button" class="sm-btn" style="background:var(--red)" onclick="delBanner(${b.id})">Del</button>
+      </div>
+    `;
+  });
+
+  // 5. Categories
+  const catBox = document.getElementById('admCatsList');
+  catBox.innerHTML = '';
+  storeData.categories.forEach(c => {
+    if(c.name === 'All') return;
+    catBox.innerHTML += `
+      <div class="adm-row">
+        <img src="${c.img}" style="width:42px;height:42px;border-radius:50%" alt="">
+        <div style="flex:1"><b>${c.name}</b></div>
+        <button type="button" class="sm-btn" style="background:#f5a623" onclick="editCategory('${c.id}')">Edit</button>
+        <button type="button" class="sm-btn" style="background:var(--red)" onclick="delCategory('${c.id}')">Del</button>
+      </div>
+    `;
+  });
+}
+
+function changeOrdStatus(idx, st){
+  storeData.orders[idx].status = st;
+  saveAllData();
+  notify('ऑर्डर स्टेटस अपडेट झाले: ' + st);
+}
+function delOrder(idx){
+  storeData.orders.splice(idx, 1);
+  saveAllData();
+  renderAdminAll();
+}
+function delCustomer(idx){
+  storeData.customers.splice(idx, 1);
+  saveAllData();
+  renderAdminAll();
+}
+
+function saveProduct(){
+  const editId = document.getElementById('editProdId').value;
+  const name = document.getElementById('prdName').value.trim();
+  const category = document.getElementById('prdCat').value || 'Jewellery';
+  const price = Number(document.getElementById('prdPrice').value);
+  const mrp = Number(document.getElementById('prdMrp').value) || price;
+  const onSale = document.getElementById('prdOnSale').checked;
+  const desc = document.getElementById('prdDesc').value.trim();
+
+  const validImages = tempProdImages.filter(x => x && x.trim() !== '');
+  if(!name || !price){
+    notify('कृपया वस्तूचे नाव आणि विक्री किंमत भरा!');
+    return;
+  }
+  if(validImages.length === 0){
+    notify('कृपया किमान १ तरी फोटो गॅलरीतून निवडा किंवा लिंक टाका!');
+    return;
+  }
+
+  if(editId){
+    const idx = storeData.products.findIndex(x=>x.id == editId);
+    if(idx > -1) storeData.products[idx] = { id: Number(editId), name, category, price, mrp, onSale, desc, images: validImages };
+    document.getElementById('editProdId').value = '';
+    document.getElementById('prodFormHeading').textContent = '+ नवीन वस्तू जोडा (१ ते ४ फोटोंसह)';
+  } else {
+    storeData.products.unshift({ id: Date.now(), name, category, price, mrp, onSale, desc, images: validImages });
+  }
+
+  saveAllData();
+  document.getElementById('prdName').value = '';
+  document.getElementById('prdPrice').value = '';
+  document.getElementById('prdMrp').value = '';
+  document.getElementById('prdOnSale').checked = false;
+  document.getElementById('prdDesc').value = '';
+  tempProdImages = ['', '', '', ''];
+  refreshFourSlotsUI();
+
+  renderProducts();
+  renderAdminAll();
+  notify('✅ वस्तू आणि फोटो कायमस्वरूपी सेव्ह झाले!');
+}
+
+function editProduct(id){
+  const p = storeData.products.find(x=>x.id === id);
+  if(!p) return;
+  document.getElementById('editProdId').value = p.id;
+  document.getElementById('prdName').value = p.name;
+  document.getElementById('prdCat').value = p.category;
+  document.getElementById('prdPrice').value = p.price;
+  document.getElementById('prdMrp').value = p.mrp;
+  document.getElementById('prdOnSale').checked = !!p.onSale;
+  document.getElementById('prdDesc').value = p.desc || '';
+  const imgs = getProdImages(p);
+  tempProdImages = [imgs[0]||'', imgs[1]||'', imgs[2]||'', imgs[3]||''];
+  refreshFourSlotsUI();
+  document.getElementById('prodFormHeading').textContent = '✏️ वस्तू एडिट करा (खाली Save दाबा)';
+  document.getElementById('adminModal').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function delProduct(id){
+  storeData.products = storeData.products.filter(x=>x.id !== id);
+  saveAllData();
+  renderProducts();
+  renderAdminAll();
+}
+
+function saveBanner(){
+  const editId = document.getElementById('editBanId').value;
+  const img = document.getElementById('banImg').value.trim();
+  if(!img){ notify('कृपया आधी बॅनरचा फोटो निवडा!'); return; }
+  if(editId){
+    const idx = storeData.banners.findIndex(x=>x.id == editId);
+    if(idx > -1) storeData.banners[idx] = { id: Number(editId), img };
+    document.getElementById('editBanId').value = '';
+  } else {
+    storeData.banners.push({ id: Date.now(), img });
+  }
+  saveAllData();
+  document.getElementById('banImg').value = '';
+  document.getElementById('banPrevImg').style.display = 'none';
+  renderBanners();
+  renderAdminAll();
+  notify('✅ बॅनर फोटो सेव्ह झाला!');
+}
+function editBanner(id){
+  const b = storeData.banners.find(x=>x.id === id);
+  if(!b) return;
+  document.getElementById('editBanId').value = b.id;
+  document.getElementById('banImg').value = b.img;
+  const prev = document.getElementById('banPrevImg');
+  prev.src = b.img;
+  prev.style.display = 'block';
+  notify('आता नवीन फोटो निवडा आणि Save दाबा');
+}
+function delBanner(id){
+  storeData.banners = storeData.banners.filter(x=>x.id !== id);
+  saveAllData();
+  renderBanners();
+  renderAdminAll();
+}
+
+function saveCategory(){
+  const editId = document.getElementById('editCatId').value;
+  const name = document.getElementById('catNameInp').value.trim();
+  const img = document.getElementById('catImgInp').value.trim() || defaultData.categories[1].img;
+  if(!name){ notify('कॅटेगरी नाव टाका!'); return; }
+  if(editId){
+    const idx = storeData.categories.findIndex(x=>x.id === editId);
+    if(idx > -1) storeData.categories[idx] = { id: editId, name, img };
+    document.getElementById('editCatId').value = '';
+  } else {
+    storeData.categories.push({ id: 'c'+Date.now(), name, img });
+  }
+  saveAllData();
+  document.getElementById('catNameInp').value = '';
+  document.getElementById('catImgInp').value = '';
+  document.getElementById('catPrevImg').style.display = 'none';
+  renderCategories();
+  renderAdminAll();
+  notify('✅ गोल कॅटेगरी सेव्ह झाली!');
+}
+function editCategory(id){
+  const c = storeData.categories.find(x=>x.id === id);
+  if(!c) return;
+  document.getElementById('editCatId').value = c.id;
+  document.getElementById('catNameInp').value = c.name;
+  document.getElementById('catImgInp').value = c.img;
+  const prev = document.getElementById('catPrevImg');
+  prev.src = c.img;
+  prev.style.display = 'block';
+}
+function delCategory(id){
+  storeData.categories = storeData.categories.filter(x=>x.id !== id);
+  saveAllData();
+  renderCategories();
+  renderAdminAll();
+}
+
+// Save Editable Footer Settings
+function saveFooterSettings(){
+  storeData.footer = {
+    backToTop: '⬆️ वर जा (Back to Top)',
+    trustLine: document.getElementById('ftTrustLine').value.trim() || defaultFooter.trustLine,
+    storeTime: document.getElementById('ftStoreTime').value.trim() || defaultFooter.storeTime,
+    aboutTitle: document.getElementById('ftAboutTitle').value.trim() || defaultFooter.aboutTitle,
+    aboutLines: document.getElementById('ftAboutLines').value.trim() || defaultFooter.aboutLines,
+    joinTitle: document.getElementById('ftJoinTitle').value.trim() || defaultFooter.joinTitle,
+    partnerText: document.getElementById('ftPartnerText').value.trim() || defaultFooter.partnerText,
+    waGroupText: document.getElementById('ftWaGroupText').value.trim() || defaultFooter.waGroupText,
+    waGroupUrl: document.getElementById('ftWaGroupUrl').value.trim(),
+    helpTitle: document.getElementById('ftHelpTitle').value.trim() || defaultFooter.helpTitle,
+    returnPolicy: document.getElementById('ftReturnPolicy').value.trim() || defaultFooter.returnPolicy,
+    delivArea: document.getElementById('ftDelivArea').value.trim() || defaultFooter.delivArea,
+    payTitle: document.getElementById('ftPayTitle').value.trim() || defaultFooter.payTitle,
+    payBadges: document.getElementById('ftPayBadges').value.trim() || defaultFooter.payBadges,
+    ytUrl: document.getElementById('ftYtUrl').value.trim(),
+    igUrl: document.getElementById('ftIgUrl').value.trim(),
+    fbUrl: document.getElementById('ftFbUrl').value.trim(),
+    address: document.getElementById('ftAddress').value.trim() || defaultFooter.address,
+    helpline: document.getElementById('ftHelpline').value.trim() || defaultFooter.helpline
+  };
+  saveAllData();
+  renderFooter();
+  notify('✅ खालच्या फुटरची संपूर्ण माहिती सेव्ह झाली!');
+}
+
+function saveSettings(){
+  const s = storeData.settings;
+  s.logoUrl = document.getElementById('setLogoUrl').value.trim();
+  s.brand1 = document.getElementById('setBrand1').value.trim() || 'सावली';
+  s.brand2 = document.getElementById('setBrand2').value.trim() || 'स्टोर';
+  s.tagline = document.getElementById('setTagline').value.trim() || 'फक्त एका तासात डिलेव्हरी';
+  s.whatsapp = document.getElementById('setWhatsapp').value.trim() || '919823400945';
+  s.pin = document.getElementById('setPin').value.trim() || '1234';
+  saveAllData();
+  applyBranding();
+  renderFooter();
+  notify('✅ लोगो आणि सेटिंग यशस्वीरित्या सेव्ह झाली!');
+}
+
+// Initialize App
+window.onload = () => {
+  loadAllData(() => {
+    applyBranding();
+    renderCategories();
+    renderBanners();
+    applyLanguage();
+    renderFooter();
+    updateBadges();
+    checkMandatoryLoginGate();
+  });
+};
+</script>
+</body>
+</html>
